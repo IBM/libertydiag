@@ -1,0 +1,10 @@
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+name: OnPush
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and test
+        run: |
+          mvn liberty:package
