@@ -24,6 +24,6 @@
    ```
    [INFO] [AUDIT   ] CWWKF0011I: The defaultServer server is ready to run a smarter planet. The defaultServer server started in 30.292 seconds.
    ```
-1. Open your browser to the insecure or secure pages:
+1. Open your browser to the HTTP or HTTPS page:
     * <http://localhost:9080/>
     * <https://localhost:9443/>
