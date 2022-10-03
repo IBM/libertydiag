@@ -1,6 +1,6 @@
 # libertydiag
 
-`libertydiag` is a Jakarta EE 9 and MicroProfile 5 application for simulating diagnostic situations.
+`libertydiag` is a [Jakarta EE](https://openliberty.io/docs/latest/jakarta-ee.html) 9 and [MicroProfile](https://openliberty.io/docs/latest/microprofile.html) 5 web application for simulating diagnostic situations.
 
 ## Pre-requisites
 
