@@ -17,14 +17,85 @@
 
   h1, h2, h3 {
     line-height: 1.2;
-  }  
+  }
+
+  table {
+    border: 1px solid #000;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  tr {
+    border: 1px solid #000;
+  }
+
+  th, td {
+    border: 1px solid #000;
+    padding: 5px;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: lightgray;
+  }
+
+	#footer {
+		padding-top: 10px;
+	}
   </style>
 </head>
 <body>
   <h1>libertydiag</h1>
-  <p>Welcome to libertydiag, a diagnostic web application. Choose something to execute below:</p>
-  <ol>
-    <li><a href="api/helloworld/execute">Hello World REST API</a></li>
-  </ol>
+  <p>Welcome to libertydiag, a diagnostic web application.</p>
+  <table>
+    <tr>
+      <th>Execute</th>
+      <th>Link</th>
+      <th>Options</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>Hello World REST API</td>
+      <td><a href="/api/helloworld/execute">/api/helloworld/execute</a></td>
+      <td>None</td>
+      <td>Simple JSON REST API</td>
+    </tr>
+    <tr>
+      <td>Hello World HTTP Servlet</td>
+      <td><a href="/HelloWorldServlet">/HelloWorldServlet</a></td>
+      <td>None</td>
+      <td>Simple Servlet</td>
+    </tr>
+    <tr>
+      <td>MicroProfile Health</td>
+      <td><a href="/health">/health</a></td>
+      <td>None</td>
+      <td>Main JSON health endpoint</td>
+    </tr>
+    <tr>
+      <td>MicroProfile Metrics</td>
+      <td><a href="/metrics">/metrics</a></td>
+      <td>None</td>
+      <td>Prometheus-style metrics output</td>
+    </tr>
+    <tr>
+      <td>MicroProfile OpenAPI</td>
+      <td><a href="/openapi/ui/">/openapi/ui/</a></td>
+      <td>None</td>
+      <td>Browser interface for OpenAPI descriptions</td>
+    </tr>
+    <tr>
+      <td>MBeans</td>
+      <td><a href="/IBMJMXConnectorREST/mbeans">/IBMJMXConnectorREST/mbeans</a></td>
+      <td>None</td>
+      <td>List all MBeans</td>
+    </tr>
+  </table>
+  <div id="footer">
+    <hr />
+		<p>Please ask questions or open issues on <a href="https://github.com/IBM/libertydiag" target="_blank">GitHub</a>.</p>
+		<p>While IBM welcomes any comments or suggestions, this application is not supported by IBM and is provided on an "as-is" basis without warranty of any kind. IBM may make updates if needed and as time permits.</p>
+    <p>Copyright International Business Machines Corporation 2022.</p>
+  </div>
 </body>
 </html>

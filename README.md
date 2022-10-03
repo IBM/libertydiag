@@ -24,12 +24,6 @@
    ```
    [INFO] [AUDIT   ] CWWKF0011I: The defaultServer server is ready to run a smarter planet. The defaultServer server started in 30.292 seconds.
    ```
-1. Check various components:
-    * HTML homepage over HTTP: <http://localhost:9080/>
-    * HTML homepage over HTTPS: <https://localhost:9443/>
-    * REST API: <http://localhost:9080/api/helloworld/execute>
-    * HTTP Servlet: <http://localhost:9080/HelloWorldServlet>
-    * MicroProfile Health: <http://localhost:9080/health>
-    * MicroProfile Metrics: <http://localhost:9080/metrics>
-    * MicroProfile OpenAPI: <http://localhost:9080/openapi/ui/>
-    * MBeans: <https://localhost:9443/IBMJMXConnectorREST/mbeans> (user = admin, password = password)
+1. Open your browser to the insecure or secure pages:
+    * <http://localhost:9080/>
+    * <https://localhost:9443/>
