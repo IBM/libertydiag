@@ -7,22 +7,29 @@
         <feature>microProfile-5.0</feature>
     </featureManager>
 
-    <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->
-
-    <!-- For the keystore, default keys are generated and stored in a keystore. To provide the keystore password, generate an 
-        encoded password using bin/securityUtility encode and add it below in the password attribute of the keyStore element. 
-        Then uncomment the keyStore element. -->
+    <!-- Best practice: generate an encoded password using bin/securityUtility encode. -->
     <keyStore password="password" />
 
-    <!--For a user registry configuration, configure your user registry. For example, configure a basic user registry using the
-        basicRegistry element. Specify your own user name below in the name attribute of the user element. For the password,
-        generate an encoded password using bin/securityUtility encode and add it in the password attribute of the user element.
-        Then uncomment the user element. -->
+    <!-- Best practice: generate an encoded password using bin/securityUtility encode. -->
     <basicRegistry id="basic" realm="BasicRealm">
-        <!--
-        <user name="yourUserName" password="" />
-        -->
+        <user name="admin" password="password" />
+        <group name="Administrators">
+            <member name="admin" />
+        </group>
     </basicRegistry>
+    <administrator-role>
+        <group>Administrators</group>
+    </administrator-role>
+
+    <!-- Decide whether administrator authentication (administrator-role) is required for /metrics.
+         HTTPS may still be used without authentication. -->
+    <mpMetrics authentication="false" />
+
+    <!-- By default, mpMetrics enables all monitor-1.0 metrics. A space for a filter disables
+         these metrics and just leaves base and app metrics which has less performance overhead.
+         If needed, enable additional metrics by replacing the space with a command-delimited list from:
+         JVM,ThreadPool,WebContainer,Session,ConnectionPool,REST -->
+    <monitor filter=" " />
 
     <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
     <httpEndpoint id="defaultHttpEndpoint"
