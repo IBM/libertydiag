@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build and test
+      - name: Compile and package
+        # package to create the war and liberty:package to create the entire Liberty package
         run: |
-          mvn package
+          mvn package liberty:package
