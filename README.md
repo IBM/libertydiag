@@ -24,4 +24,8 @@
    ```
    [INFO] [AUDIT   ] CWWKF0011I: The defaultServer server is ready to run a smarter planet. The defaultServer server started in 30.292 seconds.
    ```
-1. Open browser to <http://localhost:9080/libertydiag/api/helloworld/execute> or <https://localhost:9443/libertydiag/api/helloworld/execute>
+1. Check various components:
+    * REST API over HTTP: <http://localhost:9080/api/helloworld/execute>
+    * REST API over HTTPS: <https://localhost:9443/api/helloworld/execute>
+    * HTTP Servlet: <http://localhost:9080/HelloWorldServlet>
+    * MicroProfile Health: <http://localhost:9080/health>
