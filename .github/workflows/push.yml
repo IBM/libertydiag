@@ -7,4 +7,4 @@ jobs:
     steps:
       - name: Build and test
         run: |
-          mvn liberty:package
+          mvn io.openliberty.tools:liberty-maven-plugin:package
