@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install podman
-        run: sudo apt-get install -y podman
+      - name: Install container builder
+        run: sudo apt-get install -y docker
       - name: Compile and package
-        run: mvn package
+        run: mvn package deploy
