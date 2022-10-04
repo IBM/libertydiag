@@ -27,3 +27,26 @@
 1. Open your browser to the HTTP or HTTPS page:
     * <http://localhost:9080/>
     * <https://localhost:9443/>
+
+### Tips
+
+1. Build WAR file: `mvnw package`
+1. Build Liberty package: `mvnw liberty:package`
+1. Build container: `mvnw deploy`
+
+### Build Issues
+
+1. Running `mvnw deploy` errors with `An Ant BuildException has occured: Execute failed: java.io.IOException: Cannot run program "docker"`
+   \
+   \
+   If `docker` is not on your path and you want to use, for example, `podman` instead:
+   ```
+   mvnw -Dimage.builder=podman deploy
+   ```
+1. Running `mvnw deploy` errors with `An Ant BuildException has occured: exec returned:`
+   \
+   \
+   Add `-X` to show full output:
+   ```
+   mvnw -X deploy
+   ```

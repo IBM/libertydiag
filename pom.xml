@@ -1,57 +1,208 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>libertydiag</artifactId>
+  <version>0.1.0</version>
+  <packaging>war</packaging>
 
-    <groupId>com.example</groupId>
-    <artifactId>libertydiag</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+  <!-- Override these with `mvn -D${PROPERTY}=${VALUE}` -->
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <liberty.packaging.type>minify,runnable</liberty.packaging.type>
+    <liberty.server.name>${project.artifactId}Server</liberty.server.name>
+    <!-- OpenLiberty or WebSphere Liberty: https://github.com/OpenLiberty/ci.maven#build -->
+    <runtime>ol</runtime>
 
-    <dependencies>
-        <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>9.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.microprofile</groupId>
-            <artifactId>microprofile</artifactId>
-            <version>5.0</version>
-            <type>pom</type>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+    <!-- When changing a default here, it's usually good to change it in src/main/liberty/config/server.xml also. -->
+    <liberty.var.APP_NAME>${project.artifactId}.war</liberty.var.APP_NAME>
+    <liberty.var.HTTP_PORT>9080</liberty.var.HTTP_PORT>
+    <liberty.var.HTTPS_PORT>9443</liberty.var.HTTPS_PORT>
+    <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
+    <liberty.var.MAX_TRACE_SIZE_MB>100</liberty.var.MAX_TRACE_SIZE_MB>
+    <liberty.var.MAX_TRACE_SIZE_COUNT>2</liberty.var.MAX_TRACE_SIZE_COUNT>
+    <liberty.var.MAX_REQUEST_SECONDS>5</liberty.var.MAX_REQUEST_SECONDS>
+    <liberty.var.HUNG_REQUEST_SECONDS>300</liberty.var.HUNG_REQUEST_SECONDS>
+    <liberty.var.REQUEST_TIMING_SAMPLE_RATE>1</liberty.var.REQUEST_TIMING_SAMPLE_RATE>
 
-    <build>
-        <finalName>libertydiag</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>3.3.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>io.openliberty.tools</groupId>
-                    <artifactId>liberty-maven-plugin</artifactId>
-                    <version>3.6.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>io.openliberty.tools</groupId>
-                <artifactId>liberty-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    <image.builder>docker</image.builder>
+    <!-- Must be lower case for the container build -->
+    <image.user>ibm</image.user>
+    <image.authors>kevin.grigorenko@us.ibm.com</image.authors>
+    <image.name>${project.artifactId}</image.name>
+    <image.summary>Liberty diagnostic web application</image.summary>
+    <image.vendor>${image.user}</image.vendor>
+    <image.description>libertydiag is a Jakarta EE 9 and MicroProfile 5 web application for simulating diagnostic situations</image.description>
+    <image.url>https://github.com/IBM/libertydiag</image.url>
+    <image.source>https://github.com/IBM/libertydiag</image.source>
+    <image.repository></image.repository>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>usr-package</id>
+      <properties>
+        <packaging.type>usr</packaging.type>
+      </properties>
+    </profile>
+  </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>9.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile</groupId>
+      <artifactId>microprofile</artifactId>
+      <version>5.0</version>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.3.2</version>
+          <configuration>
+            <packagingExcludes>pom.xml</packagingExcludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>io.openliberty.tools</groupId>
+          <artifactId>liberty-maven-plugin</artifactId>
+          <version>3.7</version>
+          <configuration>
+            <serverName>${liberty.server.name}</serverName>
+            <include>${liberty.packaging.type}</include>
+            <mergeServerEnv>true</mergeServerEnv>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <configuration>
+            <!--
+              Disable the default deploy plugin so that we can
+              use the deploy phase to build the container.
+            -->
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>io.openliberty.tools</groupId>
+        <artifactId>liberty-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Run the 'liberty:package' goal during the Maven 'package' phase -->
+            <phase>package</phase>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <phase>deploy</phase>
+            <configuration>
+              <target>
+                <!-- https://ant.apache.org/manual/Tasks/ -->
+
+                <echo level="info" message="All properties" />
+
+                <echoproperties />
+
+                <!-- Get commit hash and put it into a variable for the next command -->
+                <exec
+                  dir="${project.basedir}"
+                  executable="git"
+                  failonerror="true"
+                  outputproperty="commit.id"
+                >
+                  <arg value="rev-parse" />
+                  <arg value="HEAD" />
+                </exec>
+
+                <echo level="info" message="Building container image from ${project.basedir} using ${image.builder}" />
+
+                <!--
+                  Unsure why, but if we have COPY statements in the Containerfile to copy
+                  from the target directory, some files don't exist, so we copy them over
+                  to another directory instead and use COPY statements from tmp/.
+                -->
+                <mkdir dir="tmp" />
+                <copy
+                  file="target/liberty/wlp/usr/servers/${liberty.server.name}/configDropins/overrides/liberty-plugin-variable-config.xml"
+                  todir="tmp/"
+                />
+
+                <!-- Run container build -->
+                <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
+                  <arg value="build" />
+                  <arg value="-t" />
+                  <arg value="${image.repository}${image.user}/${image.name}:${project.version}" />
+                  <arg value="-t" />
+                  <arg value="${image.repository}${image.user}/${image.name}:latest" />
+                  <arg value="--build-arg" />
+                  <arg value="VERSION=${project.version}" />
+                  <arg value="--build-arg" />
+                  <arg value="REVISION=${commit.id}" />
+                  <arg value="--build-arg" />
+                  <arg value="AUTHORS=${image.authors}" />
+                  <arg value="--build-arg" />
+                  <arg value="VENDOR=${image.vendor}" />
+                  <arg value="--build-arg" />
+                  <arg value="SUMMARY=${image.summary}" />
+                  <arg value="--build-arg" />
+                  <arg value="NAME=${image.name}" />
+                  <arg value="--build-arg" />
+                  <arg value="DESCRIPTION=${image.description}" />
+                  <arg value="--build-arg" />
+                  <arg value="URL=${image.url}" />
+                  <arg value="--build-arg" />
+                  <arg value="SOURCE=${image.source}" />
+                  <arg value="--build-arg" />
+                  <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
+                  <arg value="--build-arg" />
+                  <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                  <arg value="." />
+                </exec>
+
+                <echo level="info" message="Created local container image ${image.user}/${image.name}:${project.version}" />
+                <echo level="info" message="==================" />
+                <echo level="info" message="To run this image:" />
+                <echo level="info" message="  ${image.builder} run --rm -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.repository}${image.user}/${image.name}" />
+                <echo level="info" message="==================" />
+                <echo level="info" message="To push this image:" />
+                <echo level="info" message="  ${image.builder} push ${image.repository}${image.user}/${image.name}:${project.version} &amp;&amp; ${image.builder} push ${image.repository}${image.user}/${image.name}:latest" />
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
