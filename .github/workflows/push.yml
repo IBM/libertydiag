@@ -7,6 +7,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install container builder
-        run: sudo apt-get install -y docker
+        run: sudo apt-get install -y podman
       - name: Compile and package
-        run: mvn -Dimage.builder=docker package deploy
+        run: mvn -Dimage.builder=podman package deploy
