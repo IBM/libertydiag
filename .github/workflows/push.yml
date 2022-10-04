@@ -9,4 +9,4 @@ jobs:
       - name: Install container builder
         run: sudo apt-get install -y docker
       - name: Compile and package
-        run: mvn package deploy
+        run: mvn -Dimage.builder=docker package deploy
