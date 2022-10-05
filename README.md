@@ -4,6 +4,12 @@
 
 Running this application in production should be done with care because it may be used to execute various insecure functions.
 
+## Download
+
+Download `libertydiag.war` from the latest release at <https://github.com/IBM/libertydiag/releases/latest>
+
+This application [requires](https://www.ibm.com/docs/en/was-liberty/base?topic=management-liberty-features) Liberty >= 22.0.0.1 and the following features to be installed: jakartaee-9.1 microProfile-5.0 requestTiming-1.0
+
 ## Development
 
 1. Java >= 8 is required on your `PATH`; for example, [Semeru Java 8](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/?version=8)
@@ -26,7 +32,7 @@ Running this application in production should be done with care because it may b
 
 To develop in Eclipse, click File } Import... } Maven } Existing Maven Projects
 
-### Tips
+### Notes
 
 1. Build WAR file and Liberty package: `mvnw package`
 1. If you'd like to run the Liberty package as a jar: `java -jar target/libertydiag.jar`
