@@ -30,8 +30,7 @@
 
 ### Tips
 
-1. Build WAR file: `mvnw package`
-1. Build Liberty package: `mvnw liberty:package`
+1. Build WAR file and Liberty package: `mvnw package`
 1. Build container: `mvnw deploy`
 
 ### Build Issues
