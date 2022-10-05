@@ -29,6 +29,7 @@ To develop in Eclipse, click File } Import... } Maven } Existing Maven Projects
 ### Tips
 
 1. Build WAR file and Liberty package: `mvnw package`
+1. If you'd like to run the Liberty package as a jar: `java -jar target/libertydiag.jar`
 1. Build container: `mvnw deploy`
 1. Build container with normal logging:
    ```
