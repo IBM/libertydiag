@@ -32,7 +32,7 @@
     <liberty.var.HUNG_REQUEST_SECONDS>300</liberty.var.HUNG_REQUEST_SECONDS>
     <liberty.var.REQUEST_TIMING_SAMPLE_RATE>1</liberty.var.REQUEST_TIMING_SAMPLE_RATE>
 
-    <image.builder>docker</image.builder>
+    <image.builder>podman</image.builder>
     <!-- Must be lower case for the container build -->
     <image.user>ibm</image.user>
     <image.authors>kevin.grigorenko@us.ibm.com</image.authors>

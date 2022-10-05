@@ -15,4 +15,4 @@ jobs:
           export JAVA_HOME=/opt/java/ && \
           export PATH=/opt/java/bin/:${PATH} && \
           java -version && \
-          mvn -Dimage.builder=podman package deploy
+          mvn package deploy

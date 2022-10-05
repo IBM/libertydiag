@@ -39,12 +39,12 @@ To develop in Eclipse, click File } Import... } Maven } Existing Maven Projects
 
 ### Build Issues
 
-1. Running `mvnw deploy` errors with `An Ant BuildException has occured: Execute failed: java.io.IOException: Cannot run program "docker"`
+1. Running `mvnw deploy` errors with `An Ant BuildException has occured: Execute failed: java.io.IOException: Cannot run program "podman"`
    \
    \
-   If `docker` is not on your path and you want to use, for example, `podman` instead:
+   If `podman` is not on your path and you want to use, for example, `docker` instead:
    ```
-   mvnw -Dimage.builder=podman deploy
+   mvnw -Dimage.builder=docker deploy
    ```
 1. Running `mvnw deploy` errors with `An Ant BuildException has occured: exec returned:`
    \
