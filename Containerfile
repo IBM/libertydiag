@@ -13,7 +13,7 @@ ARG SOURCE=https://example.com/
 ARG HTTP_PORT=9080
 ARG HTTPS_PORT=9443
 # https://spdx.org/licenses/
-ARG LICENSE="EPL-2.0"
+ARG LICENSE="Apache-2.0"
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
 LABEL \
