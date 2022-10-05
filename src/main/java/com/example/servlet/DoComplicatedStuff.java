@@ -18,6 +18,7 @@ package com.example.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
@@ -92,7 +93,7 @@ public class DoComplicatedStuff extends BaseServlet {
 				out.print("9");
 			} else {
 				String lPif = new String("Pif!");
-				Integer lInt = new Integer(28);
+				Integer lInt = Integer.valueOf(28);
 				out.print(".(" + lPif + lInt + ")");
 			}
 			if (0 == i % 50) {
@@ -103,9 +104,6 @@ public class DoComplicatedStuff extends BaseServlet {
 
 	/** constants used in pi computation */
 	private static final BigDecimal FOUR = BigDecimal.valueOf(4);
-
-	/** rounding mode to use during pi computation */
-	private static final int roundingMode = BigDecimal.ROUND_HALF_EVEN;
 
 	/**
 	 * Compute the value of pi to the specified number of digits after the decimal
@@ -120,7 +118,7 @@ public class DoComplicatedStuff extends BaseServlet {
 		BigDecimal arctan1_5 = arctan(5, scale);
 		BigDecimal arctan1_239 = arctan(239, scale);
 		BigDecimal pi = arctan1_5.multiply(FOUR).subtract(arctan1_239).multiply(FOUR);
-		return pi.setScale(digits, BigDecimal.ROUND_HALF_UP);
+		return pi.setScale(digits, RoundingMode.HALF_UP);
 	}
 
 	/**
@@ -135,14 +133,14 @@ public class DoComplicatedStuff extends BaseServlet {
 		BigDecimal invX = BigDecimal.valueOf(inverseX);
 		BigDecimal invX2 = BigDecimal.valueOf(inverseX * inverseX);
 
-		numer = BigDecimal.ONE.divide(invX, scale, roundingMode);
+		numer = BigDecimal.ONE.divide(invX, scale, RoundingMode.HALF_EVEN);
 
 		result = numer;
 		int i = 1;
 		do {
-			numer = numer.divide(invX2, scale, roundingMode);
+			numer = numer.divide(invX2, scale, RoundingMode.HALF_EVEN);
 			int denom = 2 * i + 1;
-			term = numer.divide(BigDecimal.valueOf(denom), scale, roundingMode);
+			term = numer.divide(BigDecimal.valueOf(denom), scale, RoundingMode.HALF_EVEN);
 			if ((i % 2) != 0) {
 				result = result.subtract(term);
 			} else {

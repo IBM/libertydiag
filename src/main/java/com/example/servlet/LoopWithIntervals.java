@@ -60,7 +60,7 @@ public class LoopWithIntervals extends BaseServlet {
 
 	public void uselessMethod(int iteration, Object trash) {
 		// Perform some useless logic
-		String s = new Integer(iteration).toString();
+		String s = Integer.valueOf(iteration).toString();
 		if (trash != null && trash instanceof DummyClass) {
 			DummyClass dummy = (DummyClass) trash;
 			if (s.equals(dummy.getDummyString())) {
