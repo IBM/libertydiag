@@ -43,6 +43,7 @@
     <image.url>https://github.com/IBM/libertydiag</image.url>
     <image.source>https://github.com/IBM/libertydiag</image.source>
     <image.repository></image.repository>
+    <image.builder.arguments></image.builder.arguments>
   </properties>
 
   <profiles>
@@ -144,7 +145,7 @@
 
                 <echo level="info" message="All properties" />
 
-                <echoproperties />
+                <!-- <echoproperties /> -->
 
                 <!-- Get commit hash and put it into a variable for the next command -->
                 <exec
@@ -199,6 +200,7 @@
                   <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
                   <arg value="--build-arg" />
                   <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                  <arg line="${image.builder.arguments}" />
                   <arg value="." />
                 </exec>
 

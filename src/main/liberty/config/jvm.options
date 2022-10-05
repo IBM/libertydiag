@@ -4,20 +4,8 @@
 # https://www.eclipse.org/openj9/docs/xxusecontainersupport/
 -XX:MaxRAMPercentage=50
 
-# verbose GC is generally recommended and has an overhead of ~<0.2%
-# /opt/ol/wlp/output/defaultServer/logs/verbosegc*log
--Xverbosegclog:logs/verbosegc.%seq.log,20,50000
-
-# Isolate javacores, heapdumps, coredumps, Snap dumps, and JIT dumps to a separate directory
-# which may optionally be mounted to a persistent filesystem. 
-# For the enclosing Dockerfile, that would be /opt/ol/wlp/output/defaultServer/logs/diagnostics/
-# https://www.eclipse.org/openj9/docs/xdump/#syntax
--Xdump:directory=logs/diagnostics/
-
-# If the above directory is full, don't fall back to the tmp directory because
-# we don't want diagnostics affecting the main filesystem if that's where tmp is mounted.
-# https://www.eclipse.org/openj9/docs/xdump/#file-location
--Xdump:nofailover
-
 # Web container resiliency: https://publib.boulder.ibm.com/httpserv/cookbook/WebSphere_Application_Server-WAS_traditional-HTTP.html#sslutilsflushclosedown
 -DtimeoutValueInSSLClosingHandshake=1
+
+# We set J9-specific options using the envar OPENJ9_JAVA_OPTIONS in server.env instead
+# of in jvm.options so that a user can use a HotSpot JVM if they'd like.

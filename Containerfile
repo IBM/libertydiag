@@ -15,6 +15,17 @@ ARG HTTPS_PORT=9443
 # https://spdx.org/licenses/
 ARG LICENSE="Apache-2.0"
 
+# Set some container configuration. See:
+# https://github.com/OpenLiberty/ci.docker#logging
+# https://openliberty.io/docs/latest/log-trace-configuration.html#settings
+ARG WLP_LOGGING_CONSOLE_FORMAT=JSON
+ARG WLP_LOGGING_CONSOLE_LOGLEVEL=info
+ARG WLP_LOGGING_CONSOLE_SOURCE=message,trace,accessLog,ffdc,audit
+
+ENV WLP_LOGGING_CONSOLE_FORMAT="${WLP_LOGGING_CONSOLE_FORMAT}" \
+    WLP_LOGGING_CONSOLE_LOGLEVEL="${WLP_LOGGING_CONSOLE_LOGLEVEL}" \
+    WLP_LOGGING_CONSOLE_SOURCE="${WLP_LOGGING_CONSOLE_SOURCE}"
+
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
 LABEL \
   org.opencontainers.image.authors="${AUTHORS}" \
@@ -34,11 +45,6 @@ LABEL \
   org.opencontainers.image.authors="${AUTHORS}" \
   org.opencontainers.image.licenses="${LICENSE}" \
   license="${LICENSE}"
-
-# Set some envars. See https://github.com/OpenLiberty/ci.docker#logging
-ENV WLP_LOGGING_CONSOLE_FORMAT=JSON \
-    WLP_LOGGING_CONSOLE_LOGLEVEL=info \
-    WLP_LOGGING_CONSOLE_SOURCE=message,trace,accessLog,ffdc,audit
 
 # /config/configDropins/defaults/keystore.xml is overwritten directly instead of being put
 # in overrides/keystore.xml to avoid the CWWKG0102I message

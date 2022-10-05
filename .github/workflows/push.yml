@@ -8,11 +8,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install container builder
         run: sudo apt-get install -y podman
-      - name: Install Semeru Java 8 and Compile and Package the Maven repository
-        run: |
-          wget -q -O - https://www.ibm.com/semeru-runtimes/api/v3/binary/latest/8/ga/linux/x64/jdk/openj9/normal/ibm | tar -xzf - --directory /tmp/ && \
-          mv /tmp/jdk* /opt/java && \
-          export JAVA_HOME=/opt/java/ && \
-          export PATH=/opt/java/bin/:${PATH} && \
-          java -version && \
-          mvn package deploy
+      - name: Compile and Package the Maven repository
+        run: mvn package deploy

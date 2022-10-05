@@ -4,15 +4,9 @@
 
 Running this application in production should be done with care because it may be used to execute various insecure functions.
 
-## Pre-requisites
-
-* Java >= 8
-* Liberty >= 21.0.0.12
-
 ## Development
 
-### Basics
-
+1. Java >= 8 is required on your `PATH`; for example, [Semeru Java 8](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/?version=8)
 1. Build and run with [`mvnw liberty:dev`](https://openliberty.io/docs/latest/development-mode.html):
     * macOS and Linux:
       ```
@@ -36,6 +30,10 @@ To develop in Eclipse, click File } Import... } Maven } Existing Maven Projects
 
 1. Build WAR file and Liberty package: `mvnw package`
 1. Build container: `mvnw deploy`
+1. Build container with normal logging:
+   ```
+   mvnw -Dimage.builder.arguments="--build-arg WLP_LOGGING_CONSOLE_FORMAT='SIMPLE' --build-arg WLP_LOGGING_CONSOLE_LOGLEVEL='INFO' --build-arg WLP_LOGGING_CONSOLE_SOURCE='message'" deploy
+   ```
 
 ### Build Issues
 
