@@ -28,6 +28,8 @@
     * <http://localhost:9080/>
     * <https://localhost:9443/>
 
+To develop in Eclipse, click File } Import... } Maven } Existing Maven Projects
+
 ### Tips
 
 1. Build WAR file and Liberty package: `mvnw package`

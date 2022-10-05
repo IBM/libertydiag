@@ -16,24 +16,31 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet(Constants.CONTEXT_SERVLET + "PostServlet")
+public class PostServlet extends BaseServlet {
 
+	private static final long serialVersionUID = -2249324738218082831L;
+
+	@SuppressWarnings("rawtypes")
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		Enumeration e = request.getParameterNames();
+		while (e.hasMoreElements()) {
+			String name = (String) e.nextElement();
+			String val = request.getParameter(name);
+			println(out, name + "=" + val);
+		}
 	}
 }

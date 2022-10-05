@@ -13,12 +13,30 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.rest;
+package com.example.util;
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
-
-@ApplicationPath("/api")
-public class RestApplication extends Application {
-
+public class DummyClass {
+	private String dummyString;
+	private boolean dummyBoolean;
+	
+	public DummyClass(String dummyString, boolean dummyBoolean) {
+		this.dummyString = dummyString;
+		this.dummyBoolean = dummyBoolean;
+	}
+	
+	public void setDummyString(String dummyString) {
+		this.dummyString = dummyString;
+	}
+	
+	public String getDummyString() {
+		return dummyString;
+	}
+	
+	public void setDummyBoolean(boolean dummyBoolean) {
+		this.dummyBoolean = dummyBoolean;
+	}
+	
+	public boolean getDummyBoolean() {
+		return dummyBoolean;
+	}
 }

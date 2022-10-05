@@ -16,24 +16,29 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
-
-import com.example.util.Constants;
+import java.io.PrintWriter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
+import com.example.util.BaseServlet;
+import com.example.util.Constants;
+import com.example.util.Utilities;
+
+@WebServlet(Constants.CONTEXT_SERVLET + "SystemDump")
+public class SystemDump extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		println(out, "Calling com.ibm.jvm.Dump.SystemDump()...");
+		try {
+			Utilities.findClass("com.ibm.jvm.Dump");
+		} catch (ClassNotFoundException e) {
+			throw new ServletException(e);
+		}
 	}
 }

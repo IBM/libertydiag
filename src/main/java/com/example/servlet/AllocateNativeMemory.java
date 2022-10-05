@@ -16,24 +16,43 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
+@WebServlet(Constants.CONTEXT_SERVLET + "AllocateNativeMemory")
+public class AllocateNativeMemory extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 
+	private static List<ByteBuffer> list = new ArrayList<ByteBuffer>();
+	private static long total;
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		int capacity = requestInt(request, "capacity", 1024);
+		boolean save = requestBoolean(request, "save", true);
+		boolean clear = requestBoolean(request, "clear", false);
+		if (!clear) {
+			println(out, "Allocating " + capacity + " byte DirectByteBuffer. Save=" + save);
+			ByteBuffer buf = ByteBuffer.allocateDirect(capacity);
+			if (save) {
+				list.add(buf);
+				total += capacity;
+			}
+		} else {
+			println(out, "Trashing " + list.size() + " buffers of " + total + " bytes");
+			list.clear();
+			System.gc();
+		}
 	}
 }

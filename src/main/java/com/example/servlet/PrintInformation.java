@@ -16,24 +16,44 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
+@WebServlet(Constants.CONTEXT_SERVLET + "PrintInformation")
+public class PrintInformation extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 
+	public static final String DEFAULT_TYPE = "SystemProperty";
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		String type = request.getParameter("type");
+		if (type == null || type.length() == 0) {
+			type = DEFAULT_TYPE;
+		}
+		String name = request.getParameter("name");
+
+		println(out, "Available types:<br />SystemProperty<br />EnvVar");
+
+		println(out, "Starting (type=" + type + ",name=" + name + ")...");
+
+		String result = null;
+		if (name != null) {
+			if ("systemproperty".equalsIgnoreCase(type)) {
+				result = System.getProperty(name);
+			} else if ("envvar".equalsIgnoreCase(type) | ("environmentvariable".equalsIgnoreCase(type))) {
+				result = System.getenv(name);
+			}
+		}
+
+		println(out, "Result=" + result);
 	}
 }

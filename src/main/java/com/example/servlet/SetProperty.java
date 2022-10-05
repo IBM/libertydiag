@@ -16,24 +16,39 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet(Constants.CONTEXT_SERVLET + "SetProperty")
+public class SetProperty extends BaseServlet {
+
+	private static final long serialVersionUID = -7185669890413181295L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		String name = requestString(request, "name", "");
+		if (name.length() == 0) {
+			println(out, "No property name specified.");
+		} else {
+			boolean clear = requestBoolean(request, "clear", false);
+			String val = requestString(request, "value", null);
+			println(out, "Current system property value for " + name + "=" + System.getProperty(name));
+
+			if (clear) {
+				System.clearProperty(name);
+				println(out, "Cleared system property");
+			} else {
+				System.setProperty(name, val);
+				println(out, "New system property value set: " + val);
+			}
+		}
 	}
 }

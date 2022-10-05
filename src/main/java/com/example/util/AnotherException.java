@@ -13,12 +13,24 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.rest;
+package com.example.util;
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
+public class AnotherException extends Exception {
 
-@ApplicationPath("/api")
-public class RestApplication extends Application {
+	private static final long serialVersionUID = -1226397660473187360L;
 
+	public AnotherException() {
+	}
+
+	public AnotherException(String message) {
+		super(message);
+	}
+
+	public AnotherException(Throwable cause) {
+		super(cause);
+	}
+
+	public AnotherException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

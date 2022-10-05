@@ -13,12 +13,31 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.rest;
+package com.example.util;
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
+import java.util.LinkedHashMap;
 
-@ApplicationPath("/api")
-public class RestApplication extends Application {
+public class LRU<V> extends LinkedHashMap<Integer, V> {
 
+	private static final long serialVersionUID = 2065679589820223770L;
+
+	private int maxSize;
+
+	public LRU(int maxSize) {
+		super(maxSize + 1, 1.0f, true);
+		this.maxSize = maxSize;
+	}
+
+	@Override
+	protected boolean removeEldestEntry(java.util.Map.Entry<Integer, V> eldest) {
+		return size() > maxSize;
+	}
+
+	public synchronized V add(V value) {
+		return super.put(System.identityHashCode(value), value);
+	}
+
+	public int getMaxSize() {
+		return maxSize;
+	}
 }

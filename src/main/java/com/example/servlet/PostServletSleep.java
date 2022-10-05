@@ -16,7 +16,7 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
 import com.example.util.Constants;
 
@@ -26,14 +26,26 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet(Constants.CONTEXT_SERVLET + "PostServletSleep")
+public class PostServletSleep extends HttpServlet {
+
+	private static final long serialVersionUID = -5046024673719776842L;
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		int duration = 1000;
+		String durationStr = request.getParameter("textField");
+		if (durationStr != null && durationStr.length() > 0) {
+			duration = Integer.parseInt(durationStr);
+		}
+		try {
+			Thread.sleep(duration);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		out.println("Done.");
 	}
 }

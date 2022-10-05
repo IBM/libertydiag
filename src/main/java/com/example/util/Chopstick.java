@@ -13,12 +13,33 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.rest;
+package com.example.util;
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
+public class Chopstick {
+	Philosopher owner = null;
+	String name = null;
 
-@ApplicationPath("/api")
-public class RestApplication extends Application {
+	public Chopstick(String name) {
+		this.name = name;
+	}
 
+	public String getName() {
+		return name;
+	}
+
+	public synchronized void pickUp(Philosopher user) throws InterruptedException {
+		while (owner != null) {
+			wait(1000);
+		}
+		if (owner == null) {
+			owner = user;
+		}
+	}
+
+	public synchronized void putDown(Philosopher user) {
+		if (user == owner) {
+			owner = null;
+			notify();
+		}
+	}
 }

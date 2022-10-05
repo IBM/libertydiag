@@ -16,24 +16,28 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
 
 import com.example.util.Constants;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet(Constants.CONTEXT_SERVLET + "PostServletWrapper")
+public class PostServletWrapper extends HttpServlet {
+	private static final long serialVersionUID = -8484011915018314786L;
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		boolean wrap = Boolean.valueOf(request.getParameter("wrap"));
+		String txt = request.getParameter("textField");
+		if (wrap && txt != null) {
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/" + txt);
+			dispatcher.forward(request, response);
+		}
 	}
 }

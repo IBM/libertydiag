@@ -13,12 +13,26 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.rest;
+package com.example.util;
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
+import jakarta.servlet.ServletException;
 
-@ApplicationPath("/api")
-public class RestApplication extends Application {
+public class SkipCatchException extends ServletException {
 
+	private static final long serialVersionUID = -1059571309010281857L;
+
+	public SkipCatchException() {
+	}
+
+	public SkipCatchException(String message) {
+		super(message);
+	}
+
+	public SkipCatchException(Throwable cause) {
+		super(cause);
+	}
+
+	public SkipCatchException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

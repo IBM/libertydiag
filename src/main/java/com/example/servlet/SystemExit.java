@@ -16,24 +16,30 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
+@WebServlet(Constants.CONTEXT_SERVLET + "SystemExit")
+public class SystemExit extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		int code = requestInt(request, "code", 0);
+		boolean dohalt = requestBoolean(request, "dohalt", true);
+
+		if (dohalt) {
+			Runtime.getRuntime().halt(code);
+		} else {
+			System.exit(code);
+		}
 	}
 }

@@ -16,24 +16,46 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
+@WebServlet(Constants.CONTEXT_SERVLET + "Sleep")
+public class Sleep extends BaseServlet {
 	private static final long serialVersionUID = 1L;
+	public static final int DEFAULT_DURATION = 1000;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		int duration = doSleep(request);
+
+		println(out, "Finished sleeping for " + duration + "ms");
+	}
+
+	public static int doSleep(HttpServletRequest req) {
+		int duration = DEFAULT_DURATION;
+		String durationStr = req.getParameter("duration");
+
+		if (durationStr != null) {
+			duration = Integer.parseInt(durationStr);
+			if (duration <= 0) {
+				duration = DEFAULT_DURATION;
+			}
+		}
+
+		try {
+			Thread.sleep(duration);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		return duration;
 	}
 }

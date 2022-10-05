@@ -13,12 +13,8 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.example.rest;
+package com.example.util;
 
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
-
-@ApplicationPath("/api")
-public class RestApplication extends Application {
-
+public class Constants {
+	public static final String CONTEXT_SERVLET = "/servlet/";
 }

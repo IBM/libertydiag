@@ -16,24 +16,33 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet(Constants.CONTEXT_SERVLET + "ThrowNPE")
+public class ThrowNPE extends BaseServlet {
+
+	private static final long serialVersionUID = 5248455365611346368L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+
+		// Get some passed in argument
+		String arg1 = request.getParameter("arg1");
+		println(out, "Processing argument");
+		int length = processArgument(arg1);
+		println(out, "Length = " + length);
+	}
+
+	private int processArgument(String arg1) {
+		return arg1.length();
 	}
 }

@@ -16,24 +16,38 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet(Constants.CONTEXT_SERVLET + "Hang")
+public class Hang extends BaseServlet {
+	private static final long serialVersionUID = 1176497394432711160L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		println(out, "Hanging...");
+
+		try {
+			String msg = "Hanging this thread! " + Thread.currentThread().getId();
+			System.out.println(msg);
+			println(out, msg);
+			Object o = new Object();
+			synchronized (o) {
+				o.wait();
+			}
+
+			println(out, "Finished hanging... impossible! Or... is nothing impossible?");
+		} catch (Throwable t) {
+			println(out, "Error hanging: " + t.getLocalizedMessage());
+			t.printStackTrace();
+		}
 	}
 }

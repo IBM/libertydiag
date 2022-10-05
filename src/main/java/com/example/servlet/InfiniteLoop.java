@@ -16,24 +16,41 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
+@WebServlet(Constants.CONTEXT_SERVLET + "InfiniteLoop")
+public class InfiniteLoop extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		println(out, "Looping...");
+		long threshold = 0;
+		String thresholdStr = request.getParameter("threshold");
+		if (thresholdStr != null && thresholdStr.length() > 0) {
+			threshold = Integer.parseInt(thresholdStr);
+		}
+
+		long i = 0;
+		while (true) {
+			i += 2;
+
+			if (threshold == 0) {
+				i -= 2;
+			} else {
+				if (i > threshold) {
+					break;
+				}
+			}
+		}
 	}
 }

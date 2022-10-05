@@ -16,24 +16,42 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
+import com.example.util.LRU;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
+@WebServlet(Constants.CONTEXT_SERVLET + "Test")
+public class Test extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+
+		String play = "PI is about " + Math.PI;
+		println(out, play);
+	}
+
+	@Override
+	protected void manipulateResponse(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.getSession(true);
+		response.setHeader("Set-Cookie",
+				"lqe_test1a=6169c5d6f7a04402851d1c8a19e1a439; Version=1; path=/lqe; HttpOnly; secure lqe_test1b=6169c5d6f7a04402851d1c8a19e1a439; Version=1; path=/lqe; HttpOnly; secure lqe_test1c=6169c5d6f7a04402851d1c8a19e1a439; Version=1; Path=/lqe; Secure; HttpOnly");
+	}
+
+	public static void main(String[] args) {
+		LRU<String> lru = new LRU<String>(10);
+		for (int i = 0; i < 20; i++) {
+			lru.add("value" + i);
+		}
+		System.out.println(lru.size());
 	}
 }

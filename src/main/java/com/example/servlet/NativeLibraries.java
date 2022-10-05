@@ -16,24 +16,36 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet(Constants.CONTEXT_SERVLET + "NativeLibraries")
+public class NativeLibraries extends BaseServlet {
+
+	private static final long serialVersionUID = -8808645408696530510L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		String name = requestString(request, "name", "");
+		if (name.length() == 0) {
+			println(out, "No library name name specified.");
+		} else {
+			boolean system = requestBoolean(request, "system", false);
+			if (system) {
+				println(out, "Calling System.loadLibrary()");
+				System.load(name);
+			} else {
+				println(out, "Calling System.load()");
+				System.loadLibrary(name);
+			}
+		}
 	}
 }

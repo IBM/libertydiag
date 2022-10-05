@@ -16,24 +16,40 @@
 package com.example.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.io.PrintWriter;
 
+import com.example.util.BaseServlet;
 import com.example.util.Constants;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(Constants.CONTEXT_SERVLET + "HelloWorldServlet")
-public class HelloWorldServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebServlet(Constants.CONTEXT_SERVLET + "LargeResponse")
+public class LargeResponse extends BaseServlet {
+
+	private static final long serialVersionUID = -2572166286865676993L;
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
+	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World @ " + Instant.now());
+		int count = requestInt(request, "count", 1024 * 1024);
+		String incomingPattern = requestString(request, "pattern", "x");
+		int patternMultiply = requestInt(request, "patternMultiply", 1);
+		boolean flush = requestBoolean(request, "flush", false);
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < patternMultiply; i++) {
+			sb.append(incomingPattern);
+		}
+
+		char[] pattern = sb.toString().toCharArray();
+
+		for (int i = 0; i < count; i++) {
+			out.write(pattern);
+			if (flush) {
+				out.flush();
+			}
+		}
 	}
 }
