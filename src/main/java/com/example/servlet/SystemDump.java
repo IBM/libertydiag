@@ -17,15 +17,17 @@ package com.example.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import com.example.util.BaseServlet;
+import com.example.util.Constants;
+import com.example.util.Utilities;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import com.example.util.BaseServlet;
-import com.example.util.Constants;
-import com.example.util.Utilities;
 
 @WebServlet(Constants.CONTEXT_SERVLET + "SystemDump")
 public class SystemDump extends BaseServlet {
@@ -36,8 +38,14 @@ public class SystemDump extends BaseServlet {
 			throws ServletException, IOException {
 		println(out, "Calling com.ibm.jvm.Dump.SystemDump()...");
 		try {
-			Utilities.findClass("com.ibm.jvm.Dump");
-		} catch (ClassNotFoundException e) {
+			Class<?> dump = Utilities.findClass("com.ibm.jvm.Dump");
+			Method triggerDump = dump.getMethod("triggerDump", new Class<?>[] { String.class });
+			String dumpFile = (String) triggerDump.invoke(null, new Object[] { "system:request=exclusive+prepwalk" });
+			if (dumpFile != null && dumpFile.length() > 0) {
+				println(out, "Requested dump " + dumpFile);
+			}
+		} catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
 			throw new ServletException(e);
 		}
 	}
