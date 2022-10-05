@@ -28,7 +28,7 @@
     <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
     <liberty.var.MAX_TRACE_SIZE_MB>100</liberty.var.MAX_TRACE_SIZE_MB>
     <liberty.var.MAX_TRACE_SIZE_COUNT>2</liberty.var.MAX_TRACE_SIZE_COUNT>
-    <liberty.var.MAX_REQUEST_SECONDS>5</liberty.var.MAX_REQUEST_SECONDS>
+    <liberty.var.MAX_REQUEST_SECONDS>60</liberty.var.MAX_REQUEST_SECONDS>
     <liberty.var.HUNG_REQUEST_SECONDS>300</liberty.var.HUNG_REQUEST_SECONDS>
     <liberty.var.REQUEST_TIMING_SAMPLE_RATE>1</liberty.var.REQUEST_TIMING_SAMPLE_RATE>
 

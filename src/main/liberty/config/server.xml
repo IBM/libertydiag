@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- server.xml: https://openliberty.io/docs/latest/reference/config/server-configuration-overview.html#server-xml -->
 <server>
   <featureManager>
     <feature>jakartaee-9.1</feature>
     <feature>microProfile-5.0</feature>
+    <feature>requestTiming-1.0</feature>
   </featureManager>
 
   <!--
@@ -18,13 +20,13 @@
   <variable name="TRACE_SPECIFICATION" defaultValue="*=info" />
   <variable name="MAX_TRACE_SIZE_MB" defaultValue="100" />
   <variable name="MAX_TRACE_SIZE_COUNT" defaultValue="2" />
-  <variable name="MAX_REQUEST_SECONDS" defaultValue="5" />
+  <variable name="MAX_REQUEST_SECONDS" defaultValue="60" />
   <variable name="HUNG_REQUEST_SECONDS" defaultValue="300" />
   <variable name="REQUEST_TIMING_SAMPLE_RATE" defaultValue="1" />
 
   <!--
     In a container environment, X_LOG_DIR points to /logs/, but it doesn't 
-    exist in a non-Docker environment, so we point the default to the normal 
+    exist in a non-container environment, so we point the default to the normal 
     usr/servers/${SERVER}/logs/ directory.
   -->
   <variable name="X_LOG_DIR" defaultValue="${server.output.dir}/logs" />
@@ -62,6 +64,7 @@
     httpPort="${HTTP_PORT}"
     httpsPort="${HTTPS_PORT}"
   >
+    <!-- https://openliberty.io/docs/latest/access-logging.html -->
     <accessLogging
       filepath="${X_LOG_DIR}/http_access.log"
       maxFileSize="${MAX_TRACE_SIZE_MB}"
@@ -81,4 +84,32 @@
     Java runtime.
   -->
   <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+
+  <!-- https://openliberty.io/docs/latest/slow-hung-request-detection.html -->
+  <requestTiming
+    slowRequestThreshold="${MAX_REQUEST_SECONDS}s"
+    hungRequestThreshold="${HUNG_REQUEST_SECONDS}s"
+    sampleRate="${REQUEST_TIMING_SAMPLE_RATE}"
+  />
+
+  <!-- https://openliberty.io/docs/latest/log-trace-configuration.html -->
+  <logging
+    traceSpecification="${TRACE_SPECIFICATION}"
+    maxFileSize="${MAX_TRACE_SIZE_MB}"
+    maxFiles="${MAX_TRACE_SIZE_COUNT}"
+  />
+
+  <!-- 
+    persistTimeout: we're assuming LAN-only, pooled connections
+    https://publib.boulder.ibm.com/httpserv/cookbook/WebSphere_Application_Server-WAS_Liberty.html#WebSphere_Application_Server_Liberty-HTTP-Keep_Alive_Connections
+  -->
+  <httpOptions
+    persistTimeout="575h"
+  />
+
+  <!--
+    If the applications don't use resources in META-INF/resources directories of embedded JAR files
+    https://www.ibm.com/docs/en/was-liberty/nd?topic=tuning-liberty
+  -->
+  <webContainer skipMetaInfResourcesProcessing="true" />
 </server>
