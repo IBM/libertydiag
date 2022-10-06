@@ -31,9 +31,14 @@
     <liberty.var.HUNG_REQUEST_SECONDS>300</liberty.var.HUNG_REQUEST_SECONDS>
     <liberty.var.REQUEST_TIMING_SAMPLE_RATE>1</liberty.var.REQUEST_TIMING_SAMPLE_RATE>
 
-    <!-- Separate with a color (:) -->
     <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
-    <!-- <liberty.var.TRACE_SPECIFICATION>*=info:com.example.startup.ServletInitializer=all:com.example.startup.EJBInitializer=all</liberty.var.TRACE_SPECIFICATION> -->
+    <!--
+      Separate class specifications with a colon (:).
+      Remember that any messages below the threshold (default INFO)
+      will go to trace.log rather than messages.log
+      In a container, that will be in /logs/trace.log
+    -->
+    <!--<liberty.var.TRACE_SPECIFICATION>*=info:com.example.startup.ServletInitializer=all:com.example.startup.EJBInitializer=all</liberty.var.TRACE_SPECIFICATION>-->
     
     <image.builder>podman</image.builder>
     <!-- Must be lower case for the container build -->
