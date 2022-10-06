@@ -213,13 +213,14 @@
       <td><a href="/servlet/InfiniteLoop">/servlet/InfiniteLoop</a></td>
       <td>
         <ul>
+          <li>timeout: After timeout milliseconds, break.</li>
           <li>threshold: After threshold/2 iterations, break.</li>
         </ul>
       </td>
       <td>Simply loops infinitely on a servlet thread in a while loop
         with some trivial math operations. <b>WARNING</b>: You will lose
         this thread until the JVM is restarted and it will consume 100% of
-        1 CPU/core!
+        1 CPU/core unless you specify timeout or threshold!
       </td>
     </tr>
     <tr>

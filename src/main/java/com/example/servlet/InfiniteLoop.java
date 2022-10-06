@@ -30,14 +30,33 @@ import jakarta.servlet.http.HttpServletResponse;
 public class InfiniteLoop extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 
+	private long threshold;
+
 	@Override
 	protected void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException {
 		println(out, "Looping...");
-		long threshold = 0;
-		String thresholdStr = request.getParameter("threshold");
-		if (thresholdStr != null && thresholdStr.length() > 0) {
-			threshold = Integer.parseInt(thresholdStr);
+
+		threshold = requestLong(request, "threshold", 0);
+		final long timeout = requestLong(request, "timeout", 0);
+
+		if (timeout > 0) {
+			Thread timeoutThread = new Thread() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(timeout);
+
+						threshold = 1;
+
+					} catch (InterruptedException e) {
+						// Canceled for some reason
+					}
+				}
+			};
+			timeoutThread.setName("InfiniteLoop timeout thread");
+			timeoutThread.setPriority(Thread.MAX_PRIORITY);
+			timeoutThread.start();
 		}
 
 		long i = 0;

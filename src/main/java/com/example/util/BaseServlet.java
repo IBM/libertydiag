@@ -178,17 +178,30 @@ public abstract class BaseServlet extends HttpServlet {
 	protected abstract void doWork(HttpServletRequest request, HttpServletResponse response, PrintWriter out)
 			throws ServletException, IOException;
 
-	public static int requestInt(HttpServletRequest request, String name, int value) {
+	public static int requestInt(HttpServletRequest request, String name, int defaultValue) {
 		String str = request.getParameter(name);
 
 		if (str != null && str.length() > 0) {
 			try {
-				value = Integer.parseInt(str);
+				return Integer.parseInt(str);
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
 		}
-		return value;
+		return defaultValue;
+	}
+
+	public static long requestLong(HttpServletRequest request, String name, long defaultValue) {
+		String str = request.getParameter(name);
+
+		if (str != null && str.length() > 0) {
+			try {
+				return Long.parseLong(str);
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
+		return defaultValue;
 	}
 
 	public static String requestString(HttpServletRequest request, String name, String defaultValue) {
