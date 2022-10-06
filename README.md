@@ -10,6 +10,10 @@ Download `libertydiag.war` from the latest release at <https://github.com/IBM/li
 
 This application [requires](https://www.ibm.com/docs/en/was-liberty/base?topic=management-liberty-features) Liberty >= 22.0.0.1 and the following features to be installed: jakartaee-9.1 microProfile-5.0 requestTiming-1.0
 
+## Screenshot
+
+![Screenshot](screenshot.png)
+
 ## Development
 
 1. Java >= 8 is required on your `PATH`; for example, [Semeru Java 8](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/?version=8)
