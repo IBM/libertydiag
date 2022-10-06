@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
   <artifactId>libertydiag</artifactId>
-  <version>0.1.20221005</version>
+  <version>0.1.20221006</version>
   <packaging>war</packaging>
 
   <!-- Override these with `mvn -D${PROPERTY}=${VALUE}` -->
