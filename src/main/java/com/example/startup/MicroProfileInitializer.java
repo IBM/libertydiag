@@ -31,7 +31,7 @@ public class MicroProfileInitializer {
 	private static final String CLASS_NAME = MicroProfileInitializer.class.getCanonicalName();
 	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
-	public void onStartup(@Observes @Initialized(ApplicationScoped.class) Object event) {
+	public void onStartup(@Observes @Initialized(ApplicationScoped.class) final Object event) {
 		if (LOG.isLoggable(Level.FINER))
 			LOG.entering(CLASS_NAME, "onStartup");
 

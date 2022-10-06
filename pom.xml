@@ -25,13 +25,16 @@
     <liberty.var.APP_NAME>${project.artifactId}.war</liberty.var.APP_NAME>
     <liberty.var.HTTP_PORT>9080</liberty.var.HTTP_PORT>
     <liberty.var.HTTPS_PORT>9443</liberty.var.HTTPS_PORT>
-    <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
     <liberty.var.MAX_TRACE_SIZE_MB>100</liberty.var.MAX_TRACE_SIZE_MB>
     <liberty.var.MAX_TRACE_SIZE_COUNT>2</liberty.var.MAX_TRACE_SIZE_COUNT>
     <liberty.var.MAX_REQUEST_SECONDS>60</liberty.var.MAX_REQUEST_SECONDS>
     <liberty.var.HUNG_REQUEST_SECONDS>300</liberty.var.HUNG_REQUEST_SECONDS>
     <liberty.var.REQUEST_TIMING_SAMPLE_RATE>1</liberty.var.REQUEST_TIMING_SAMPLE_RATE>
 
+    <!-- Separate with a color (:) -->
+    <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
+    <!-- <liberty.var.TRACE_SPECIFICATION>*=info:com.example.startup.ServletInitializer=all:com.example.startup.EJBInitializer=all</liberty.var.TRACE_SPECIFICATION> -->
+    
     <image.builder>podman</image.builder>
     <!-- Must be lower case for the container build -->
     <image.user>ibm</image.user>
