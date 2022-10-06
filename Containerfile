@@ -49,7 +49,7 @@ LABEL \
 
 # /config/configDropins/defaults/keystore.xml is overwritten directly instead of being put
 # in overrides/keystore.xml to avoid the CWWKG0102I message
-COPY --chown=1001:0 src/main/liberty/config /config
+COPY --chown=default:root src/main/liberty/config /config
 
 # Remove redundant config
 RUN rm /config/configDropins/defaults/open-default-port.xml
@@ -58,10 +58,10 @@ RUN rm /config/configDropins/defaults/open-default-port.xml
 # Only available in 'kernel-slim'. The 'full' tag already includes all features for convenience.
 RUN features.sh
 
-COPY --chown=1001:0 target/*.war /config/apps
+COPY --chown=default:root target/*.war /config/apps
 
 # See the comment in pom.xml about why we're copying from tmp/ instead of directly from target/
-COPY --chown=1001:0 tmp/liberty-plugin-variable-config.xml /config/configDropins/overrides/
+COPY --chown=default:root tmp/liberty-plugin-variable-config.xml /config/configDropins/overrides/
 
 EXPOSE ${HTTP_PORT} ${HTTPS_PORT}
 
