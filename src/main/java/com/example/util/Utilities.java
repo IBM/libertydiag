@@ -19,8 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Utilities {
+
+	private static final String CLASS_NAME = Utilities.class.getCanonicalName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
 	public static ConcurrentHashMap<String, Class<?>> LOADED_CLASSES = new ConcurrentHashMap<String, Class<?>>();
 
@@ -61,6 +66,10 @@ public class Utilities {
 	}
 
 	public static String getVersion() {
+
+		if (LOG.isLoggable(Level.FINER))
+			LOG.entering(CLASS_NAME, "getVersion");
+
 		String result = "0.0.0";
 		Properties properties = new Properties();
 		try {
@@ -71,8 +80,15 @@ public class Utilities {
 
 			result = properties.getProperty("appversion", result);
 		} catch (IOException e) {
-			// No need to stop processing if there's a problem loading the file
+
+			// No need to stop processing if we can't read maven.properties for some reason
+			if (LOG.isLoggable(Level.FINE))
+				LOG.log(Level.FINE, "Error reading maven.properties", e);
 		}
+
+		if (LOG.isLoggable(Level.FINER))
+			LOG.exiting(CLASS_NAME, "getVersion");
+
 		return result;
 	}
 }

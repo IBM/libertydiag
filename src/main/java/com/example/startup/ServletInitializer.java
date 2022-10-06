@@ -27,29 +27,27 @@ public class ServletInitializer implements ServletContextListener {
 	private static final String CLASS_NAME = ServletInitializer.class.getCanonicalName();
 	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
-	private static final String METHOD_CONTEXTINITIALIZED = "contextInitialized";
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		if (LOG.isLoggable(Level.FINER))
-			LOG.entering(CLASS_NAME, METHOD_CONTEXTINITIALIZED);
+			LOG.entering(CLASS_NAME, "contextInitialized");
 
 		if (LOG.isLoggable(Level.FINE))
 			LOG.fine("libertydiag started ; " + this);
 
 		if (LOG.isLoggable(Level.FINER))
-			LOG.exiting(CLASS_NAME, METHOD_CONTEXTINITIALIZED);
+			LOG.exiting(CLASS_NAME, "contextInitialized");
 	}
 
-	private static final String METHOD_CONTEXTDESTROYED = "contextDestroyed";
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 		if (LOG.isLoggable(Level.FINER))
-			LOG.entering(CLASS_NAME, METHOD_CONTEXTDESTROYED);
+			LOG.entering(CLASS_NAME, "contextDestroyed");
 
 		if (LOG.isLoggable(Level.FINE))
 			LOG.fine("libertydiag shut down ; " + this);
 
 		if (LOG.isLoggable(Level.FINER))
-			LOG.exiting(CLASS_NAME, METHOD_CONTEXTDESTROYED);
+			LOG.exiting(CLASS_NAME, "contextDestroyed");
 	}
 }

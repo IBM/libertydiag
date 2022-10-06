@@ -31,27 +31,25 @@ public class MicroProfileInitializer {
 	private static final String CLASS_NAME = MicroProfileInitializer.class.getCanonicalName();
 	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
-	private static final String METHOD_ONSTARTUP = "onStartup";
 	public void onStartup(@Observes @Initialized(ApplicationScoped.class) Object event) {
 		if (LOG.isLoggable(Level.FINER))
-			LOG.entering(CLASS_NAME, METHOD_ONSTARTUP);
+			LOG.entering(CLASS_NAME, "onStartup");
 
 		if (LOG.isLoggable(Level.INFO))
 			LOG.info("libertydiag started. Version: " + Utilities.getVersion() + " ; " + this);
 
 		if (LOG.isLoggable(Level.FINER))
-			LOG.exiting(CLASS_NAME, METHOD_ONSTARTUP);
+			LOG.exiting(CLASS_NAME, "onStartup");
 	}
 
-	private static final String METHOD_ONSHUTDOWN = "onShutdown";
 	public void onShutdown(@Observes @BeforeDestroyed(ApplicationScoped.class) final Object event) {
 		if (LOG.isLoggable(Level.FINER))
-			LOG.entering(CLASS_NAME, METHOD_ONSHUTDOWN);
+			LOG.entering(CLASS_NAME, "onShutdown");
 
 		if (LOG.isLoggable(Level.INFO))
 			LOG.info("libertydiag shut down ; " + this);
 
 		if (LOG.isLoggable(Level.FINER))
-			LOG.exiting(CLASS_NAME, METHOD_ONSHUTDOWN);
+			LOG.exiting(CLASS_NAME, "onShutdown");
 	}
 }

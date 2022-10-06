@@ -31,7 +31,6 @@ public class HelloWorldJAXRS {
 
 	private static final String CLASS_NAME = HelloWorldJAXRS.class.getCanonicalName();
 	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
-	private static final String METHOD_EXECUTE = "execute";
 
 	@Path("execute")
 	@GET
@@ -39,13 +38,13 @@ public class HelloWorldJAXRS {
 	public Map<String, Object> execute() throws Throwable {
 
 		if (LOG.isLoggable(Level.FINER))
-			LOG.entering(CLASS_NAME, METHOD_EXECUTE);
+			LOG.entering(CLASS_NAME, "execute");
 
 		Map<String, Object> json = new HashMap<>();
 		json.put("message", "Hello World @ " + Instant.now());
 
 		if (LOG.isLoggable(Level.FINER))
-			LOG.exiting(CLASS_NAME, METHOD_EXECUTE, json);
+			LOG.exiting(CLASS_NAME, "execute", json);
 
 		return json;
 	}
