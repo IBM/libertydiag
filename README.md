@@ -41,7 +41,12 @@ This application [requires](https://www.ibm.com/docs/en/was-liberty/base?topic=m
     * <http://localhost:9080/>
     * <https://localhost:9443/>
 
-To develop in Eclipse, click File } Import... } Maven } Existing Maven Projects
+### Eclipse
+
+To develop in Eclipse:
+
+1. Install the Eclipse flavor: [Eclipse IDE for Enterprise Java and Web Developers](https://www.eclipse.org/downloads/packages/)
+1. Start Eclipse and click File } Import... } Maven } Existing Maven Projects
 
 ### Notes
 
