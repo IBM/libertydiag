@@ -15,12 +15,15 @@
  */
 package com.example.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Utilities {
-	
+
 	public static ConcurrentHashMap<String, Class<?>> LOADED_CLASSES = new ConcurrentHashMap<String, Class<?>>();
-	
+
 	public static void callStatic(String className, String methodName) {
 		try {
 			Class<?> c = findClass(className);
@@ -29,7 +32,7 @@ public class Utilities {
 			throw new RuntimeException(t);
 		}
 	}
-	
+
 	public static void callStatic1String(String className, String methodName, String arg1) {
 		try {
 			Class<?> c = findClass(className);
@@ -47,7 +50,7 @@ public class Utilities {
 			throw new RuntimeException(t);
 		}
 	}
-	
+
 	public static Class<?> findClass(String className) throws ClassNotFoundException {
 		Class<?> c = LOADED_CLASSES.get(className);
 		if (c == null) {
@@ -55,5 +58,21 @@ public class Utilities {
 			LOADED_CLASSES.put(className, c);
 		}
 		return c;
+	}
+
+	public static String getVersion() {
+		String result = "0.0.0";
+		Properties properties = new Properties();
+		try {
+			try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("/maven.properties")) {
+				properties.load(inputStream);
+			}
+
+			result = properties.getProperty("appversion", result);
+		} catch (IOException e) {
+			// No need to stop processing if there's a problem loading the file
+		}
+		return result;
 	}
 }

@@ -73,6 +73,17 @@
 
   <build>
     <finalName>${project.artifactId}</finalName>
+
+    <!-- Use filtering to put variables into a properties file: https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/maven.properties</include>
+        </includes>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -89,9 +100,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
           <version>3.3.2</version>
-          <configuration>
-            <packagingExcludes>pom.xml</packagingExcludes>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>io.openliberty.tools</groupId>
