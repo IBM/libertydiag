@@ -41,7 +41,7 @@
     <!--<liberty.var.TRACE_SPECIFICATION>*=info:com.example.startup.ServletInitializer=all:com.example.startup.EJBInitializer=all</liberty.var.TRACE_SPECIFICATION>-->
     
     <image.builder>podman</image.builder>
-    <!-- Must be lower case for the container build -->
+    <!-- image.user must be lower case for the container build -->
     <image.user>ibm</image.user>
     <image.authors>kevin.grigorenko@us.ibm.com</image.authors>
     <image.name>${project.artifactId}</image.name>
