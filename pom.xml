@@ -16,7 +16,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <!-- https://github.com/OpenLiberty/ci.maven/blob/main/docs/package.md#package -->
+    <!--
+      For background on packaging types, see:
+      * https://github.com/OpenLiberty/ci.maven/blob/main/docs/package.md#package
+      * https://www.ibm.com/docs/en/was-liberty/nd?topic=line-server-command-options
+    -->
     <liberty.packaging.type>minify,runnable</liberty.packaging.type>
     <liberty.server.name>${project.artifactId}Server</liberty.server.name>
     <!-- OpenLiberty (ol) or WebSphere Liberty (wlp): https://github.com/OpenLiberty/ci.maven#build -->
