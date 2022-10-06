@@ -1,4 +1,5 @@
-FROM icr.io/appcafe/open-liberty:kernel-slim-java8-openj9-ubi
+# We use IBM Java 8 so that we can use the Health Center sampling profiler
+FROM icr.io/appcafe/open-liberty:kernel-slim-java8-ibmjava-ubi
 
 # These defaults are overridden by `--build-arg` arguments in pom.xml
 ARG NAME=placeholder
