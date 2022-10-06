@@ -16,13 +16,21 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+    <!--_____________________
+       |                    |
+       | Liberty properties |
+       |____________________|
+                             -->
+
+    <liberty.server.name>${project.artifactId}Server</liberty.server.name>
+
     <!--
       For background on packaging types, see:
       * https://github.com/OpenLiberty/ci.maven/blob/main/docs/package.md#package
       * https://www.ibm.com/docs/en/was-liberty/nd?topic=line-server-command-options
     -->
     <liberty.packaging.type>minify,runnable</liberty.packaging.type>
-    <liberty.server.name>${project.artifactId}Server</liberty.server.name>
+
     <!-- OpenLiberty (ol) or WebSphere Liberty (wlp): https://github.com/OpenLiberty/ci.maven#build -->
     <runtime>ol</runtime>
 
@@ -44,6 +52,12 @@
     -->
     <!--<liberty.var.TRACE_SPECIFICATION>*=info:com.example.startup.ServletInitializer=all:com.example.startup.EJBInitializer=all</liberty.var.TRACE_SPECIFICATION>-->
     
+    <!--____________________________
+       |                            |
+       | Container build properties |
+       |____________________________|
+                                     -->
+
     <image.builder>podman</image.builder>
     <!-- image.user must be lower case for the container build -->
     <image.user>ibm</image.user>
