@@ -18,7 +18,7 @@
 
     <liberty.packaging.type>minify,runnable</liberty.packaging.type>
     <liberty.server.name>${project.artifactId}Server</liberty.server.name>
-    <!-- OpenLiberty or WebSphere Liberty: https://github.com/OpenLiberty/ci.maven#build -->
+    <!-- OpenLiberty (ol) or WebSphere Liberty (wlp): https://github.com/OpenLiberty/ci.maven#build -->
     <runtime>ol</runtime>
 
     <!-- When changing a default here, it's usually good to change it in src/main/liberty/config/server.xml also. -->
