@@ -9,4 +9,4 @@ jobs:
       - name: Install container builder
         run: sudo apt-get install -y podman
       - name: Compile and Package the Maven repository
-        run: mvn package deploy
+        run: mvn package
