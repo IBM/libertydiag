@@ -14,7 +14,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <liberty.packaging.type>minify,runnable</liberty.packaging.type>
     <liberty.server.name>${project.artifactId}Server</liberty.server.name>
@@ -30,7 +30,6 @@
     <liberty.var.MAX_REQUEST_SECONDS>60</liberty.var.MAX_REQUEST_SECONDS>
     <liberty.var.HUNG_REQUEST_SECONDS>300</liberty.var.HUNG_REQUEST_SECONDS>
     <liberty.var.REQUEST_TIMING_SAMPLE_RATE>1</liberty.var.REQUEST_TIMING_SAMPLE_RATE>
-
     <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
     <!--
       Separate class specifications with a colon (:).
