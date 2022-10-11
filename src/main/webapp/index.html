@@ -37,9 +37,9 @@
     background-color: lightgray;
   }
 
-	#footer {
-		padding-top: 10px;
-	}
+  #footer {
+    padding-top: 10px;
+  }
   </style>
 </head>
 <body>
@@ -54,43 +54,43 @@
     </tr>
     <tr>
       <td>MicroProfile Health</td>
-      <td><a href="/health">/health</a></td>
+      <td><a href="health">/health</a></td>
       <td>None</td>
       <td>Main JSON health endpoint</td>
     </tr>
     <tr>
       <td>MicroProfile Metrics</td>
-      <td><a href="/metrics">/metrics</a></td>
+      <td><a href="metrics">/metrics</a></td>
       <td>None</td>
       <td>Prometheus-style metrics output</td>
     </tr>
     <tr>
       <td>MicroProfile OpenAPI</td>
-      <td><a href="/openapi/ui/">/openapi/ui/</a></td>
+      <td><a href="openapi/ui/">/openapi/ui/</a></td>
       <td>None</td>
       <td>Browser interface for OpenAPI descriptions</td>
     </tr>
     <tr>
       <td>Hello World REST API</td>
-      <td><a href="/api/helloworld/execute">/api/helloworld/execute</a></td>
+      <td><a href="api/helloworld/execute">/api/helloworld/execute</a></td>
       <td>None</td>
       <td>Simple JSON REST API</td>
     </tr>
     <tr>
       <td>Hello World HTTP Servlet</td>
-      <td><a href="/servlet/HelloWorldServlet">/servlet/HelloWorldServlet</a></td>
+      <td><a href="servlet/HelloWorldServlet">/servlet/HelloWorldServlet</a></td>
       <td>None</td>
       <td>Simple Servlet</td>
     </tr>
     <tr>
       <td>MBeans</td>
-      <td><a href="/IBMJMXConnectorREST/mbeans">/IBMJMXConnectorREST/mbeans</a></td>
+      <td><a href="IBMJMXConnectorREST/mbeans">/IBMJMXConnectorREST/mbeans</a></td>
       <td>None</td>
       <td>List all MBeans</td>
     </tr>
     <tr>
       <td>Sleep Servlet</td>
-      <td><a href="/servlet/Sleep">/servlet/Sleep</a></td>
+      <td><a href="servlet/Sleep">/servlet/Sleep</a></td>
       <td>
         <ul>
           <li>duration: The time to sleep, in milliseconds.</li>
@@ -98,30 +98,36 @@
       </td>
       <td>Sleeps the executing Servlet thread with a call to <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.html#sleep-long-" target="_blank">java.lang.Thread.sleep(duration)</a>
         <p />
-        <a href="/servlet/Sleep?duration=900000">Sleep for 15 minutes</a>
+        <a href="servlet/Sleep?duration=900000">Sleep for 15 minutes</a>
       </td>
     </tr>
     <tr>
+      <td>Load Runner</td>
+      <td><a href="loadrunner.jsp">loadrunner.jsp</a></td>
+      <td>None</td>
+      <td>Generate concurrent user traffic for an HTTP endpoint</td>
+    </tr>
+    <tr>
       <td>Request a thread dump</td>
-      <td><a href="/servlet/ThreadDump">/servlet/ThreadDump</a></td>
+      <td><a href="servlet/ThreadDump">/servlet/ThreadDump</a></td>
       <td>None</td>
       <td>Calls the J9 Java method <a href="https://www.eclipse.org/openj9/docs/api/jdk8/platform/jvm/com/ibm/jvm/Dump.html#JavaDump--" target="_blank">com.ibm.jvm.Dump.JavaDump()</a></td>
     </tr>
     <tr>
       <td>Request a heapdump</td>
-      <td><a href="/servlet/HeapDump">/servlet/HeapDump</a></td>
+      <td><a href="servlet/HeapDump">/servlet/HeapDump</a></td>
       <td>None</td>
       <td>Calls the J9 Java method <a href="https://www.eclipse.org/openj9/docs/api/jdk8/platform/jvm/com/ibm/jvm/Dump.html#HeapDump--" target="_blank">com.ibm.jvm.Dump.HeapDump()</a></td>
     </tr>
     <tr>
       <td>Initiate a system dump (IBM JVM only)</td>
-      <td><a href="/servlet/SystemDump">/servlet/SystemDump</a></td>
+      <td><a href="servlet/SystemDump">/servlet/SystemDump</a></td>
       <td>None</td>
       <td>Calls the J9 Java method <a href="https://www.eclipse.org/openj9/docs/api/jdk8/platform/jvm/com/ibm/jvm/Dump.html#triggerDump-java.lang.String-" target="_blank">com.ibm.jvm.Dump.triggerDump<br />("system:request=exclusive+prepwalk")</a></td>
     </tr>
     <tr>
       <td>Force a garbage collection using System.gc()</td>
-      <td><a href="/servlet/GarbageCollect">/servlet/GarbageCollect</a></td>
+      <td><a href="servlet/GarbageCollect">/servlet/GarbageCollect</a></td>
       <td>None</td>
       <td>Call <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#gc--" target="_blank">java.lang.System.gc()</a>.
         If the JVM is running with generic JVM argument -Xdisableexplicitgc (J9 JVM) or
@@ -129,7 +135,7 @@
     </tr>
     <tr>
       <td>Allocate Objects</td>
-      <td><a href="/servlet/AllocateObject">/servlet/AllocateObject</a></td>
+      <td><a href="servlet/AllocateObject">/servlet/AllocateObject</a></td>
       <td>
         <ul>
           <li>size: The size of each object to allocate, in bytes.</li>
@@ -154,7 +160,7 @@
     </tr>
     <tr>
       <td>Hang a thread using Object.wait</td>
-      <td><a href="/servlet/Hang">/servlet/Hang</a></td>
+      <td><a href="servlet/Hang">/servlet/Hang</a></td>
       <td>None</td>
       <td>Hangs the servlet thread infinitely by calling
         Object.wait() on a synchronized variable. <b>WARNING</b>: You will
@@ -162,7 +168,7 @@
     </tr>
     <tr>
       <td>Deadlocker (Dining Philosophers)</td>
-      <td><a href="/servlet/Deadlocker">/servlet/Deadlocker</a></td>
+      <td><a href="servlet/Deadlocker">/servlet/Deadlocker</a></td>
       <td>None</td>
       <td>Attempt to create a deadlock with an algorithm that
         emulates the <a href="http://en.wikipedia.org/wiki/Dining_philosophers_problem" target="_blank">Dining Philosophers problem</a>.
@@ -176,7 +182,7 @@
     </tr>
     <tr>
       <td>DoComplicatedStuff</td>
-      <td><a href="/servlet/DoComplicatedStuff">/servlet/DoComplicatedStuff</a></td>
+      <td><a href="servlet/DoComplicatedStuff">/servlet/DoComplicatedStuff</a></td>
       <td>
         <ul>
           <li>iterations: The number of times to run the complicated
@@ -195,7 +201,7 @@
     </tr>
     <tr>
       <td>PrintInformation</td>
-      <td><a href="/servlet/PrintInformation">/servlet/PrintInformation</a></td>
+      <td><a href="servlet/PrintInformation">/servlet/PrintInformation</a></td>
       <td>
         <ul>
           <li>type: The object to query for the information. For <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#getProperty-java.lang.String-" target="_blank">java.lang.System.getProperty()</a>,
@@ -210,7 +216,7 @@
     </tr>
     <tr>
       <td>Infinite Loop Servlet</td>
-      <td><a href="/servlet/InfiniteLoop">/servlet/InfiniteLoop</a></td>
+      <td><a href="servlet/InfiniteLoop">/servlet/InfiniteLoop</a></td>
       <td>
         <ul>
           <li>timeout: After timeout milliseconds, break.</li>
@@ -225,13 +231,13 @@
     </tr>
     <tr>
       <td>LoopWithIntervals</td>
-      <td><a href="/servlet/LoopWithIntervals">/servlet/LoopWithIntervals</a></td>
+      <td><a href="servlet/LoopWithIntervals">/servlet/LoopWithIntervals</a></td>
       <td>None</td>
       <td>Loop through some methods and hold references to create some object graphs.</td>
     </tr>
     <tr>
       <td>ControlJVMTrace</td>
-      <td><a href="/servlet/ControlJVMTrace">/servlet/ControlJVMTrace</a></td>
+      <td><a href="servlet/ControlJVMTrace">/servlet/ControlJVMTrace</a></td>
       <td>
         <ul>
           <li>suspend: Boolean. If true, call
@@ -253,7 +259,7 @@
     </tr>
     <tr>
       <td>Simple</td>
-      <td><a href="/servlet/Simple">/servlet/Simple</a></td>
+      <td><a href="servlet/Simple">/servlet/Simple</a></td>
       <td>
         <ul>
           <li>sessionname: Finds all cookies for the current request with this in their name, and prints their values.</li>
@@ -278,7 +284,7 @@
     </tr>
     <tr>
       <td>JVM Time</td>
-      <td><a href="/servlet/SystemTime">/servlet/SystemTime</a></td>
+      <td><a href="servlet/SystemTime">/servlet/SystemTime</a></td>
       <td>None</td>
       <td>Calls <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#currentTimeMillis--" target="_blank">System.currentTimeMillis()</a>,
         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#nanoTime--" target="_blank">System.nanoTime()</a>,
@@ -288,13 +294,13 @@
     </tr>
     <tr>
       <td>Run Finalization</td>
-      <td><a href="/servlet/RunFinalization">/servlet/RunFinalization</a></td>
+      <td><a href="servlet/RunFinalization">/servlet/RunFinalization</a></td>
       <td>None</td>
       <td>Calls <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#runFinalization--" target="_blank">Runtime.runFinalization()</a>.</td>
     </tr>
     <tr>
       <td>Sessions</td>
-      <td><a href="/servlet/Sessions">/servlet/Sessions</a></td>
+      <td><a href="servlet/Sessions">/servlet/Sessions</a></td>
       <td>
         <ul>
           <li>num: The number of attributes to set. Defaults to 0.</li>
@@ -305,7 +311,7 @@
     </tr>
     <tr>
       <td>SetProperty</td>
-      <td><a href="/servlet/SetProperty">/servlet/SetProperty</a></td>
+      <td><a href="servlet/SetProperty">/servlet/SetProperty</a></td>
       <td>
         <ul>
           <li>name: The name of the system property.</li>
@@ -316,7 +322,7 @@
     </tr>
     <tr>
       <td>NativeLibraries</td>
-      <td><a href="/servlet/NativeLibraries">/servlet/NativeLibraries</a></td>
+      <td><a href="servlet/NativeLibraries">/servlet/NativeLibraries</a></td>
       <td>
         <ul>
           <li>name: The name of the native library to load.</li>
@@ -328,7 +334,7 @@
     </tr>
     <tr>
       <td>Exceptions</td>
-      <td><a href="/servlet/Exceptions">/servlet/Exceptions</a></td>
+      <td><a href="servlet/Exceptions">/servlet/Exceptions</a></td>
       <td>
         <ul>
           <li>throwconstructor: The type of constructor to call on the
@@ -343,7 +349,7 @@
     </tr>
     <tr>
       <td>Allocate Native Memory</td>
-      <td><a href="/servlet/AllocateNativeMemory">/servlet/AllocateNativeMemory</a></td>
+      <td><a href="servlet/AllocateNativeMemory">/servlet/AllocateNativeMemory</a></td>
       <td>
         <ul>
           <li>capacity: How many bytes to allocate. This may be rounded
@@ -359,7 +365,7 @@
     </tr>
     <tr>
       <td>Classloader Leak</td>
-      <td><a href="/servlet/ClassloaderLeak">/servlet/ClassloaderLeakMemory</a></td>
+      <td><a href="servlet/ClassloaderLeak">/servlet/ClassloaderLeakMemory</a></td>
       <td>None</td>
       <td>Spawns a thread so that when the application is stopped,
         the application classloader will not be able to be cleaned up (i.e.
@@ -368,7 +374,7 @@
     </tr>
     <tr>
       <td>Large Response</td>
-      <td><a href="/servlet/LargeResponse">/servlet/LargeResponse</a></td>
+      <td><a href="servlet/LargeResponse">/servlet/LargeResponse</a></td>
       <td>
         <ul>
           <li>pattern: The string pattern to send back.</li>
@@ -379,7 +385,7 @@
     </tr>
     <tr>
       <td>Throw NullPointerException</td>
-      <td><a href="/servlet/ThrowNPE">/servlet/ThrowNPE</a></td>
+      <td><a href="servlet/ThrowNPE">/servlet/ThrowNPE</a></td>
       <td>None</td>
       <td>Throw a NullPointerException</td>
     </tr>

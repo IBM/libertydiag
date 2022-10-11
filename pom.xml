@@ -9,7 +9,7 @@
   <version>0.1.20221006</version>
   <packaging>war</packaging>
 
-  <!-- Override these with `mvn -D${PROPERTY}=${VALUE}` -->
+  <!-- Override these with mvn -D${PROPERTY}=${VALUE} -->
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -34,7 +34,11 @@
     <!-- OpenLiberty (ol) or WebSphere Liberty (wlp): https://github.com/OpenLiberty/ci.maven#build -->
     <runtime>ol</runtime>
 
-    <!-- When changing a default here, it's usually good to change it in src/main/liberty/config/server.xml also. -->
+    <!--
+      These values get generated into liberty-plugin-variable-config.xml which is then
+      put into configDropins/overrides.
+      When changing a default here, it's usually good to change it in src/main/liberty/config/server.xml also.
+    -->
     <liberty.var.APP_NAME>${project.artifactId}.war</liberty.var.APP_NAME>
     <liberty.var.HTTP_PORT>9080</liberty.var.HTTP_PORT>
     <liberty.var.HTTPS_PORT>9443</liberty.var.HTTPS_PORT>
@@ -43,14 +47,17 @@
     <liberty.var.MAX_REQUEST_SECONDS>60</liberty.var.MAX_REQUEST_SECONDS>
     <liberty.var.HUNG_REQUEST_SECONDS>300</liberty.var.HUNG_REQUEST_SECONDS>
     <liberty.var.REQUEST_TIMING_SAMPLE_RATE>1</liberty.var.REQUEST_TIMING_SAMPLE_RATE>
+    <liberty.var.MAX_CONCURRENT_THREADS>100</liberty.var.MAX_CONCURRENT_THREADS>
     <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
     <!--
       Separate class specifications with a colon (:).
       Remember that any messages below the threshold (default INFO)
       will go to trace.log rather than messages.log
       In a container, that will be in /logs/trace.log
+      For common specifications, see https://www.ibm.com/support/pages/set-trace-and-get-full-dump-websphere-liberty
+      The trace specification may also be updated dynamically after Liberty starts.
     -->
-    <!--<liberty.var.TRACE_SPECIFICATION>*=info:com.example.startup.ServletInitializer=all:com.example.startup.EJBInitializer=all</liberty.var.TRACE_SPECIFICATION>-->
+    <!--<liberty.var.TRACE_SPECIFICATION>*=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all</liberty.var.TRACE_SPECIFICATION>-->
     
     <!--____________________________
        |                            |
@@ -93,6 +100,12 @@
       <artifactId>microprofile</artifactId>
       <version>5.0</version>
       <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
+      <version>3.0.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

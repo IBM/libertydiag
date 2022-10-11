@@ -1,11 +1,15 @@
 # jvm.options: https://openliberty.io/docs/latest/reference/config/server-configuration-overview.html#jvm-options
 
-# Set max heap size based on RAM, or, in containers, based on spec.containers[].resources.limits.memory if used
-# https://www.eclipse.org/openj9/docs/xxusecontainersupport/
--XX:MaxRAMPercentage=50
-
 # Web container resiliency: https://publib.boulder.ibm.com/httpserv/cookbook/WebSphere_Application_Server-WAS_traditional-HTTP.html#sslutilsflushclosedown
 -DtimeoutValueInSSLClosingHandshake=1
 
+# Do not set -Xmx nor -XX:MaxRAMPercentage. In containers, if spec.containers[].resources.limits.memory is used,
+# then the maximum heap size will be based on that while generally leaving enough space for native memory:
+# https://www.eclipse.org/openj9/docs/xxusecontainersupport/
+# Otherwise, if there is no memory limit, or we're in a non-container environment, then the default
+# heap size is small but sufficient for this application:
+# https://www.eclipse.org/openj9/docs/openj9_defaults/
+
 # We set J9-specific options using the envar OPENJ9_JAVA_OPTIONS in server.env instead
-# of in jvm.options so that a user can use a HotSpot JVM if they'd like.
+# of in jvm.options so that a user can use a HotSpot JVM if they'd like. Otherwise,
+# if we put J9-specific options here, HotSpot would fail to start.
