@@ -36,6 +36,11 @@
         padding-right: 18px;
         border: 1px solid black;
       }
+
+			hr {
+				margin-top: 30px;
+				margin-bottom: 30px;
+			}
       </style>
   </head>
   <body>
@@ -90,5 +95,7 @@
       </p>
       <input type="submit" value="Start" />
     </form>
+		<hr />
+		<p><a href="/">Back to the home page</a></p>
   </body>
 </html>
