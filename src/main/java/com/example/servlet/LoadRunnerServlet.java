@@ -58,7 +58,7 @@ public class LoadRunnerServlet extends HttpServlet {
 
 	@Resource(lookup = "concurrent/executorService1")
 	private ManagedExecutorService executorService;
-	
+
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Date started = new Date();
@@ -99,8 +99,9 @@ public class LoadRunnerServlet extends HttpServlet {
 			String user = request.getParameter("user");
 			String password = request.getParameter("password");
 
-			String info = "Starting load runner to " + target + " with " + concurrentusers + " concurrent users and "
-					+ totalrequests + " total requests";
+			LoadRunner loadRunner = new LoadRunner();
+			String info = "Starting load runner (" + loadRunner + ") to " + target + " with " + concurrentusers
+					+ " concurrent users and " + totalrequests + " total requests";
 
 			if (user != null && user.length() > 0) {
 				info += " using user " + user;
@@ -115,9 +116,8 @@ public class LoadRunnerServlet extends HttpServlet {
 			while (clients.size() < concurrentusers) {
 				clients.add(ClientBuilder.newClient());
 			}
-			
+
 			// Now start the actual threads
-			LoadRunner loadRunner = new LoadRunner();
 			loadRunner.setTarget(target);
 			loadRunner.setConcurrentUsers(concurrentusers);
 			loadRunner.setTotalRequests(totalrequests);
@@ -127,7 +127,7 @@ public class LoadRunnerServlet extends HttpServlet {
 			loadRunner.setMethod(method);
 			loadRunner.setEntity(entity);
 			loadRunner.setClients(clients);
-			
+
 			executorService.submit(loadRunner);
 
 			// We don't actually wait for the result, instead redirect back to the form

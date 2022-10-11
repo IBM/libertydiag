@@ -74,7 +74,7 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 		final long wallclockTime = finished - started;
 
 		if (LOG.isLoggable(Level.INFO))
-			LOG.info("Load Runner finished in " + (finished - started) + " ms; requests: "
+			LOG.info("Load Runner (" + this + ") finished in " + (finished - started) + " ms; requests: "
 					+ loadResult.totalResults.count + ", concurrency: " + concurrentUsers + ", average execution: "
 					+ String.format("%.2f", loadResult.totalResults.getAverageExecutionTime()) + " ms, max execution: "
 					+ loadResult.totalResults.maxExecutionTime + " ms, min execution: "

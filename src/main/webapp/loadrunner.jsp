@@ -45,7 +45,7 @@
     %>
       <div class="notification">
         <p>
-        The Load Runner has been started at <%= request.getParameter("started") %>. Check messages.log for results.
+        Started at <%= request.getParameter("started") %>. Check messages.log for results.
 				</p>
       </div>
     <%
