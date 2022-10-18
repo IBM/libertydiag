@@ -6,6 +6,12 @@
     <feature>microProfile-5.0</feature>
   </featureManager>
 
+  <!--_____________
+      |           |
+      | Variables |
+      |___________|
+                   -->
+
   <!--
     These are default values used through the configuration. They will
     be overridden by the Maven build in 
@@ -33,6 +39,12 @@
   -->
   <variable name="X_LOG_DIR" defaultValue="${server.output.dir}/logs" />
 
+  <!--____________________
+      |                  |
+      | HTTP(S) endpoint |
+      |__________________|
+                          -->
+
   <!-- host="*" allows access from a remote client -->
   <httpEndpoint
     id="defaultHttpEndpoint"
@@ -49,11 +61,11 @@
     />
   </httpEndpoint>
 
-  <!--________________________
-    |                        |
-    | Security configuration |
-    |________________________|
-                              -->
+  <!--__________________________
+      |                        |
+      | Security configuration |
+      |________________________|
+                                -->
 
   <!-- The <keystore /> is specified in configDropins/defaults/keystore.xml -->
 
@@ -78,11 +90,11 @@
     <group>Administrators</group>
   </administrator-role>
 
-  <!--___________________________
-    |                           |
-    | Application configuration |
-    |___________________________|
-                              -->
+  <!--_____________________________
+      |                           |
+      | Application configuration |
+      |___________________________|
+                                   -->
 
   <managedExecutorService jndiName="concurrent/executorService1">
     <contextService>
@@ -106,11 +118,11 @@
     </application-bnd>
   </webApplication>
 
-  <!--_____________________
-    |                     |
-    | Other configuration |
-    |_____________________|
-                           -->
+  <!--_______________________
+      |                     |
+      | Other configuration |
+      |_____________________|
+                             -->
 
   <!--
     Decide whether administrator authentication (administrator-role) is required
