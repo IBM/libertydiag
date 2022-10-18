@@ -61,6 +61,14 @@
     />
   </httpEndpoint>
 
+  <!-- 
+    persistTimeout: we're assuming LAN-only, pooled connections
+    https://publib.boulder.ibm.com/httpserv/cookbook/WebSphere_Application_Server-WAS_Liberty.html#WebSphere_Application_Server_Liberty-HTTP-Keep_Alive_Connections
+  -->
+  <httpOptions
+    persistTimeout="575h"
+  />
+
   <!--__________________________
       |                        |
       | Security configuration |
@@ -153,14 +161,6 @@
     traceSpecification="${TRACE_SPECIFICATION}"
     maxFileSize="${MAX_TRACE_SIZE_MB}"
     maxFiles="${MAX_TRACE_SIZE_COUNT}"
-  />
-
-  <!-- 
-    persistTimeout: we're assuming LAN-only, pooled connections
-    https://publib.boulder.ibm.com/httpserv/cookbook/WebSphere_Application_Server-WAS_Liberty.html#WebSphere_Application_Server_Liberty-HTTP-Keep_Alive_Connections
-  -->
-  <httpOptions
-    persistTimeout="575h"
   />
 
   <!--
