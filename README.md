@@ -2,7 +2,7 @@
 
 `libertydiag` is a [Jakarta EE 9](https://openliberty.io/docs/latest/jakarta-ee.html) and [MicroProfile 5](https://openliberty.io/docs/latest/microprofile.html) web application for simulating diagnostic situations.
 
-Running this application in production should be done with care because it may be used to execute various insecure functions.
+Running this application in production should be done with care because it may be used to execute various powerful functions.
 
 ## Download
 
