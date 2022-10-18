@@ -157,6 +157,10 @@
   />
 
   <!-- https://openliberty.io/docs/latest/log-trace-configuration.html -->
+  <!--
+    For common specifications, see https://www.ibm.com/support/pages/set-trace-and-get-full-dump-websphere-liberty
+    HTTP (simple): *=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all
+  -->
   <logging
     traceSpecification="${TRACE_SPECIFICATION}"
     maxFileSize="${MAX_TRACE_SIZE_MB}"
@@ -168,6 +172,17 @@
     https://www.ibm.com/docs/en/was-liberty/nd?topic=tuning-liberty
   -->
   <webContainer skipMetaInfResourcesProcessing="true" />
+
+  <!--
+    Log into the admin center at /adminCenter/ and a user name and password based on administrator-role in server.xml
+    https://openliberty.io/docs/latest/admin-center.html
+  -->
+  <featureManager><feature>adminCenter-1.0</feature></featureManager>
+
+  <!-- Allow editing server.xml through the adminCenter -->
+  <remoteFileAccess>
+    <writeDir>${server.config.dir}</writeDir>
+  </remoteFileAccess>
 
   <!--
     Local JMX connector:
@@ -191,7 +206,7 @@
          -J-Djavax.net.ssl.trustStore=truststore.p12 \
          -J-Djavax.net.ssl.trustStorePassword=password \
          -J-Djavax.net.ssl.trustStoreType=pkcs12
-    5. Select remote process, paste the contents from step 1, set the user name and password based on administrator-role in server.xml, and connect
+    5. Select remote process, paste the contents from step 1, set a user name and password based on administrator-role in server.xml, and connect
     https://www.ibm.com/docs/en/was-liberty/core?topic=jmx-configuring-secure-connection-liberty
   -->
   <featureManager><feature>restConnector-2.0</feature></featureManager>
