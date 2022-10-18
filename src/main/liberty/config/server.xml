@@ -4,8 +4,6 @@
   <featureManager>
     <feature>jakartaee-9.1</feature>
     <feature>microProfile-5.0</feature>
-    <!-- Optional usage of requestTiming -->
-    <feature>requestTiming-1.0</feature>
   </featureManager>
 
   <!--
@@ -36,7 +34,7 @@
   <variable name="X_LOG_DIR" defaultValue="${server.output.dir}/logs" />
 
   <!-- host="*" allows access from a remote client -->
-    <httpEndpoint
+  <httpEndpoint
     id="defaultHttpEndpoint"
     host="*"
     httpPort="${HTTP_PORT}"
@@ -50,28 +48,6 @@
       logFormat="%h %u %t &quot;%r&quot; %s %b %D %{R}W %p %{remote}p"
     />
   </httpEndpoint>
-
-  <managedExecutorService jndiName="concurrent/executorService1">
-    <contextService>
-      <jeeMetadataContext />
-    </contextService>
-    <concurrencyPolicy max="${MAX_CONCURRENT_THREADS}" />
-  </managedExecutorService>
-
-  <!-- Automatically expand WAR files and EAR files -->
-  <applicationManager autoExpand="true" />
-
-  <!-- Configures the application on a specified context root -->
-  <webApplication contextRoot="/" location="${APP_NAME}">
-    <application-bnd>
-      <security-role name="Administrators">
-        <group name="Administrators" />
-      </security-role>
-      <security-role name="Users">
-        <group name="Users" />
-      </security-role>
-    </application-bnd>
-  </webApplication>
 
   <!--________________________
     |                        |
@@ -102,6 +78,34 @@
     <group>Administrators</group>
   </administrator-role>
 
+  <!--___________________________
+    |                           |
+    | Application configuration |
+    |___________________________|
+                              -->
+
+  <managedExecutorService jndiName="concurrent/executorService1">
+    <contextService>
+      <jeeMetadataContext />
+    </contextService>
+    <concurrencyPolicy max="${MAX_CONCURRENT_THREADS}" />
+  </managedExecutorService>
+
+  <!-- Automatically expand WAR files and EAR files -->
+  <applicationManager autoExpand="true" />
+
+  <!-- Configures the application on a specified context root -->
+  <webApplication contextRoot="/" location="${APP_NAME}">
+    <application-bnd>
+      <security-role name="Administrators">
+        <group name="Administrators" />
+      </security-role>
+      <security-role name="Users">
+        <group name="Users" />
+      </security-role>
+    </application-bnd>
+  </webApplication>
+
   <!--_____________________
     |                     |
     | Other configuration |
@@ -123,7 +127,9 @@
   -->
   <monitor filter=" " />
 
+  <!-- Optional usage of requestTiming -->
   <!-- https://openliberty.io/docs/latest/slow-hung-request-detection.html -->
+  <featureManager><feature>requestTiming-1.0</feature></featureManager>
   <requestTiming
     slowRequestThreshold="${MAX_REQUEST_SECONDS}s"
     hungRequestThreshold="${HUNG_REQUEST_SECONDS}s"
