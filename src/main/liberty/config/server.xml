@@ -186,9 +186,11 @@
        keytool -import -noprompt -trustcacerts -alias default -file server.cert -keystore truststore.p12 -storepass password
     4. Start JConsole with the Liberty restConnector.jar on the classpath and information about the trust store
        jconsole \
+         -debug \
          -J-Djava.class.path=$JAVA_HOME/lib/jconsole.jar:$JAVA_HOME/lib/tools.jar:$LIBERTY/wlp/clients/restConnector.jar \
          -J-Djavax.net.ssl.trustStore=truststore.p12 \
-         -J-Djavax.net.ssl.trustStorePassword=password
+         -J-Djavax.net.ssl.trustStorePassword=password \
+         -J-Djavax.net.ssl.trustStoreType=pkcs12
     5. Select remote process, paste the contents from step 1, set the user name and password based on administrator-role in server.xml, and connect
     https://www.ibm.com/docs/en/was-liberty/core?topic=jmx-configuring-secure-connection-liberty
   -->
