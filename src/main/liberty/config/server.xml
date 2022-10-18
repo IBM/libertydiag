@@ -168,4 +168,29 @@
     https://www.ibm.com/docs/en/was-liberty/nd?topic=tuning-liberty
   -->
   <webContainer skipMetaInfResourcesProcessing="true" />
+
+  <!--
+    Local JMX connector:
+    1. echo $(cat wlp/usr/servers/libertydiagServer/logs/state/com.ibm.ws.jmx.local.address)
+    2. Start JConsole, select Remote process, paste the contents from step 1, click Insecure Connection
+    https://www.ibm.com/docs/en/was-liberty/core?topic=jmx-configuring-local-connection-liberty
+  -->
+  <featureManager><feature>localConnector-1.0</feature></featureManager>
+
+  <!--
+    Remote JMX connector:
+    1. echo $(cat wlp/usr/servers/libertydiagServer/logs/state/com.ibm.ws.jmx.rest.address)
+    2. Extract the certificate from that host and port:
+       openssl s_client -connect localhost:9443 </dev/null > server.cert
+    3. Import the certificate into a PKCS12 trust store:
+       keytool -import -noprompt -trustcacerts -alias default -file server.cert -keystore truststore.p12 -storepass password
+    4. Start JConsole with the Liberty restConnector.jar on the classpath and information about the trust store
+       jconsole \
+         -J-Djava.class.path=$JAVA_HOME/lib/jconsole.jar:$JAVA_HOME/lib/tools.jar:$LIBERTY/wlp/clients/restConnector.jar \
+         -J-Djavax.net.ssl.trustStore=truststore.p12 \
+         -J-Djavax.net.ssl.trustStorePassword=password
+    5. Select remote process, paste the contents from step 1, set the user name and password based on administrator-role in server.xml, and connect
+    https://www.ibm.com/docs/en/was-liberty/core?topic=jmx-configuring-secure-connection-liberty
+  -->
+  <featureManager><feature>restConnector-2.0</feature></featureManager>
 </server>
