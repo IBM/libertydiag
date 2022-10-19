@@ -74,25 +74,38 @@
     <image.description>libertydiag is a Jakarta EE 9 and MicroProfile 5 web application for simulating diagnostic situations</image.description>
     <image.url>https://github.com/IBM/libertydiag</image.url>
     <image.source>https://github.com/IBM/libertydiag</image.source>
+
     <!-- image.user is either blank or must be lower case and end with a / -->
     <image.user></image.user>
+
     <!-- image.repository is either blank or otherwise must end with a / -->
     <image.repository>localhost/</image.repository>
+
     <image.tag>latest</image.tag>
-    <!-- Any other arguments to pass to the image builder -->
-    <image.builder.arguments></image.builder.arguments>
-    <image.manifest.repository.push>false</image.manifest.repository.push>
-    <image.manifest.repository>quay.io</image.manifest.repository>
-    <image.manifest.user>ibm</image.manifest.user>
-    <image.manifest.name>${image.name}</image.manifest.name>
-    <image.manifest.tag>${image.tag}</image.manifest.tag>
+
     <image.build.linux.amd64>true</image.build.linux.amd64>
+
     <!-- The Liberty images aren't built for arm64 at the time of this writing -->
     <image.build.linux.arm64>false</image.build.linux.arm64>
+
     <!-- TODO: The Liberty build fails for ppc64le on the `RUN features.sh` step at the time of this writing -->
     <image.build.linux.ppc64le>false</image.build.linux.ppc64le>
+
     <!-- TODO: The Liberty build fails for s390x on the `RUN features.sh` step at the time of this writing -->
     <image.build.linux.s390x>false</image.build.linux.s390x>
+
+    <image.manifest.repository.push>false</image.manifest.repository.push>
+
+    <image.manifest.repository>quay.io</image.manifest.repository>
+
+    <image.manifest.user>ibm</image.manifest.user>
+
+    <image.manifest.name>${image.name}</image.manifest.name>
+
+    <image.manifest.tag>${image.tag}</image.manifest.tag>
+
+    <!-- Any other arguments to pass to the image builder -->
+    <image.builder.arguments></image.builder.arguments>
   </properties>
 
   <profiles>
