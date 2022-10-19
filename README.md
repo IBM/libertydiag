@@ -82,6 +82,7 @@ To develop in Eclipse:
 1. Update the date in `pom.xml` in the line `<version>0.1.$DATE</version>` and then commit and push
     1. `git commit -a -s -S -m "Description of changes in this release"`
     1. `git push`
+1. Confirm that the push built successfully: <https://github.com/IBM/libertydiag/actions>
 1. Tag with the same version and push
     1. `git tag 0.1.$DATE`
     1. `git push --tags`
