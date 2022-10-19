@@ -50,15 +50,6 @@
     <liberty.var.REQUEST_TIMING_SAMPLE_RATE>1</liberty.var.REQUEST_TIMING_SAMPLE_RATE>
     <liberty.var.MAX_CONCURRENT_THREADS>100</liberty.var.MAX_CONCURRENT_THREADS>
     <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
-    <!--
-      Separate class specifications with a colon (:).
-      Remember that any messages below the threshold (default INFO)
-      will go to trace.log rather than messages.log
-      In a container, that will be in /logs/trace.log
-      For common specifications, see https://www.ibm.com/support/pages/set-trace-and-get-full-dump-websphere-liberty
-      The trace specification may also be updated dynamically after Liberty starts.
-    -->
-    <!--<liberty.var.TRACE_SPECIFICATION>*=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all</liberty.var.TRACE_SPECIFICATION>-->
     
     <!--____________________________
        |                            |
