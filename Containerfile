@@ -60,8 +60,8 @@ RUN features.sh
 
 COPY --chown=default:root target/*.war /config/apps
 
-# See the comment in pom.xml about why we're copying from tmp/ instead of directly from target/
-COPY --chown=default:root tmp/liberty-plugin-variable-config.xml /config/configDropins/overrides/
+# Maven generates a variables file that will override the defaults
+COPY --chown=default:root target/liberty/wlp/usr/servers/*/configDropins/overrides/liberty-plugin-variable-config.xml /config/configDropins/overrides/
 
 EXPOSE ${HTTP_PORT} ${HTTPS_PORT}
 

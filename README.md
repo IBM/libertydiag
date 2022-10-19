@@ -17,6 +17,12 @@ This application [requires](https://www.ibm.com/docs/en/was-liberty/base?topic=m
   <featureManager>
 ```
 
+The latest release is also built into an image at [quay.io/ibm/libertydiag](https://quay.io/repository/ibm/libertydiag); for example:
+
+```
+podman run --rm -p 9080:9080 -p 9443:9443 -it quay.io/ibm/libertydiag
+```
+
 ## Screenshot
 
 ![Screenshot](screenshot.png)

@@ -220,17 +220,6 @@
                 </exec>
 
                 <!--
-                  Unsure why, but if we have COPY statements in the Containerfile to copy
-                  from the target directory, some files don't exist, so we copy them over
-                  to another directory instead and use COPY statements from tmp/.
-                -->
-                <mkdir dir="tmp" />
-                <copy
-                  file="target/liberty/wlp/usr/servers/${liberty.server.name}/configDropins/overrides/liberty-plugin-variable-config.xml"
-                  todir="tmp/"
-                />
-
-                <!--
                   Run container builds for linux/amd64, linux/ppc64le, and linux/s390x
                   First remove any existing builds from the manifest
                     Ant OS families: https://ant.apache.org/manual/api/org/apache/tools/ant/taskdefs/condition/Os.html
@@ -250,11 +239,7 @@
 
                 <echo level="info" message="==================" />
 
-                <condition property="buildlinuxamd64">
-                  <equals arg1="${image.build.linux.amd64}" arg2="true" />
-                </condition>
-          
-                <sequential if:true="${buildlinuxamd64}">
+                <sequential if:true="${image.build.linux.amd64}">
                   <echo level="info" message="Building ${image.repository}${image.user}${image.name}:${image.tag} for linux/amd64" />
                   <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
                     <arg value="build" />
@@ -301,11 +286,7 @@
                   <echo level="info" message="==================" />
                 </sequential>
 
-                <condition property="buildlinuxarm64">
-                  <equals arg1="${image.build.linux.arm64}" arg2="true" />
-                </condition>
-          
-                <sequential if:true="${buildlinuxarm64}">
+                <sequential if:true="${image.build.linux.arm64}">
                   <echo level="info" message="Building ${image.repository}${image.user}${image.name}:${image.tag} for linux/arm64" />
                   <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
                     <arg value="build" />
@@ -352,11 +333,7 @@
                   <echo level="info" message="==================" />
                 </sequential>
 
-                <condition property="buildlinuxppc64le">
-                  <equals arg1="${image.build.linux.ppc64le}" arg2="true" />
-                </condition>
-          
-                <sequential if:true="${buildlinuxppc64le}">
+                <sequential if:true="${image.build.linux.ppc64le}">
                   <echo level="info" message="Building ${image.repository}${image.user}${image.name}:${image.tag} for linux/ppc64le" />
                   <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
                     <arg value="build" />
@@ -403,11 +380,7 @@
                   <echo level="info" message="==================" />
                 </sequential>
 
-                <condition property="buildlinuxs390x">
-                  <equals arg1="${image.build.linux.s390x}" arg2="true" />
-                </condition>
-          
-                <sequential if:true="${buildlinuxs390x}">
+                <sequential if:true="${image.build.linux.s390x}">
                   <echo level="info" message="Building ${image.repository}${image.user}${image.name}:${image.tag} for linux/s390x" />
                   <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
                     <arg value="build" />
@@ -457,14 +430,7 @@
                 <!--
                   Finally, we can push these to a remote repository if the argument is set
                 -->
-                <condition property="pushimage">
-                  <equals arg1="${image.manifest.repository.push}" arg2="true" />
-                </condition>
-                <condition property="isquay">
-                  <equals arg1="${image.manifest.repository}" arg2="quay.io" />
-                </condition>
-         
-                <sequential if:true="${pushimage}">
+                <sequential if:true="${image.manifest.repository.push}">
                   <echo level="info" message="==================" />
                   <echo level="info" message="Logging into ${image.manifest.repository}" />
                   <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
@@ -483,11 +449,11 @@
                   </exec>
                   <echo level="info" message="Pushed manifest successfully. Test with:" />
                   <echo level="info" message="  ${image.builder} run --rm -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
-                  <echo if:true="${isquay}" level="info" message="Quay.io home page is: https://${image.manifest.repository}/repository/${image.manifest.user}/${image.manifest.name}?tab=tags" />
+                  <echo if:true="${image.manifest.repository}" level="info" message="Quay.io home page is: https://${image.manifest.repository}/repository/${image.manifest.user}/${image.manifest.name}?tab=tags" />
                 </sequential>
 
                 <!-- else condition for the above sequential using unless:true -->
-                <echo unless:true="${pushimage}" level="info" message="Manifest not pushed to ${image.manifest.repository} by default. To push, specify -Dimage.manifest.repository.push=true" />
+                <echo unless:true="${image.manifest.repository.push}" level="info" message="Manifest not pushed to ${image.manifest.repository} by default. To push, specify -Dimage.manifest.repository.push=true" />
 
               </target>
             </configuration>
