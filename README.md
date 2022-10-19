@@ -4,7 +4,7 @@
 
 Running this application in production should be done with care because it may be used to execute various powerful functions.
 
-## Download
+## Download or Run
 
 Download `libertydiag.war` from the latest release at <https://github.com/IBM/libertydiag/releases/latest>
 
