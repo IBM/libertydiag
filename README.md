@@ -23,6 +23,8 @@ The latest release is also built into an image at [quay.io/ibm/libertydiag](http
 podman run --rm -p 9080:9080 -p 9443:9443 -it quay.io/ibm/libertydiag
 ```
 
+Then access at <http://localhost:9080/> or <https://localhost:9443/>
+
 ## Screenshot
 
 ![Screenshot](screenshot.png)
