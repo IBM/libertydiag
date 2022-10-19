@@ -54,11 +54,14 @@ To develop in Eclipse:
 1. Build WAR file and Liberty package: `mvnw package`
 1. Run Liberty in the console: `mvnw liberty:run`
 1. If you'd like to run the Liberty package as a jar: `java -jar target/libertydiag.jar`
-1. Build container: `mvnw deploy`
 1. Build container with normal logging:
    ```
    mvnw -Dimage.builder.arguments="--build-arg WLP_LOGGING_CONSOLE_FORMAT='SIMPLE' --build-arg WLP_LOGGING_CONSOLE_LOGLEVEL='INFO' --build-arg WLP_LOGGING_CONSOLE_SOURCE='message'" deploy
    ```
+1. Build container: `mvnw deploy`
+1. Build container and push the manifest to [quay.io/ibm/libertydiag](https://quay.io/repository/ibm/libertydiag?tab=tags):
+    1. `podman login quay.io`
+    1. `mvnw -Dimage.manifest.repository.push=true deploy`
 
 ### Build Issues
 

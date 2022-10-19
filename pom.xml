@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
@@ -66,17 +67,32 @@
                                      -->
 
     <image.builder>podman</image.builder>
-    <!-- image.user must be lower case for the container build -->
-    <image.user>ibm</image.user>
-    <image.authors>kevin.grigorenko@us.ibm.com</image.authors>
     <image.name>${project.artifactId}</image.name>
+    <image.authors>kevin.grigorenko@us.ibm.com</image.authors>
     <image.summary>Liberty diagnostic web application</image.summary>
     <image.vendor>${image.user}</image.vendor>
     <image.description>libertydiag is a Jakarta EE 9 and MicroProfile 5 web application for simulating diagnostic situations</image.description>
     <image.url>https://github.com/IBM/libertydiag</image.url>
     <image.source>https://github.com/IBM/libertydiag</image.source>
-    <image.repository></image.repository>
+    <!-- image.user is either blank or must be lower case and end with a / -->
+    <image.user></image.user>
+    <!-- image.repository is either blank or otherwise must end with a / -->
+    <image.repository>localhost/</image.repository>
+    <image.tag>latest</image.tag>
+    <!-- Any other arguments to pass to the image builder -->
     <image.builder.arguments></image.builder.arguments>
+    <image.manifest.repository.push>false</image.manifest.repository.push>
+    <image.manifest.repository>quay.io</image.manifest.repository>
+    <image.manifest.user>ibm</image.manifest.user>
+    <image.manifest.name>${image.name}</image.manifest.name>
+    <image.manifest.tag>${image.tag}</image.manifest.tag>
+    <image.build.linux.amd64>true</image.build.linux.amd64>
+    <!-- The Liberty images aren't built for arm64 at the time of this writing -->
+    <image.build.linux.arm64>false</image.build.linux.arm64>
+    <!-- TODO: The Liberty build fails for ppc64le on the `RUN features.sh` step at the time of this writing -->
+    <image.build.linux.ppc64le>false</image.build.linux.ppc64le>
+    <!-- TODO: The Liberty build fails for s390x on the `RUN features.sh` step at the time of this writing -->
+    <image.build.linux.s390x>false</image.build.linux.s390x>
   </properties>
 
   <profiles>
@@ -181,14 +197,18 @@
           <execution>
             <phase>deploy</phase>
             <configuration>
-              <target>
+              <target xmlns:if="ant:if" xmlns:unless="ant:unless">
                 <!-- https://ant.apache.org/manual/Tasks/ -->
 
+                <echo level="info" message="==================" />
+                <echo level="info" message="Building container image from ${project.basedir} using ${image.builder}" />
+
+                <!--
                 <echo level="info" message="All properties" />
+                <echoproperties />
+                -->
 
-                <!-- <echoproperties /> -->
-
-                <!-- Get commit hash and put it into a variable for the next command -->
+                <!-- Get commit hash and put it into a variable for an image build argument -->
                 <exec
                   dir="${project.basedir}"
                   executable="git"
@@ -198,8 +218,6 @@
                   <arg value="rev-parse" />
                   <arg value="HEAD" />
                 </exec>
-
-                <echo level="info" message="Building container image from ${project.basedir} using ${image.builder}" />
 
                 <!--
                   Unsure why, but if we have COPY statements in the Containerfile to copy
@@ -212,46 +230,265 @@
                   todir="tmp/"
                 />
 
-                <!-- Run container build -->
-                <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
-                  <arg value="build" />
-                  <arg value="-t" />
-                  <arg value="${image.repository}${image.user}/${image.name}:${project.version}" />
-                  <arg value="-t" />
-                  <arg value="${image.repository}${image.user}/${image.name}:latest" />
-                  <arg value="--build-arg" />
-                  <arg value="VERSION=${project.version}" />
-                  <arg value="--build-arg" />
-                  <arg value="REVISION=${commit.id}" />
-                  <arg value="--build-arg" />
-                  <arg value="AUTHORS=${image.authors}" />
-                  <arg value="--build-arg" />
-                  <arg value="VENDOR=${image.vendor}" />
-                  <arg value="--build-arg" />
-                  <arg value="SUMMARY=${image.summary}" />
-                  <arg value="--build-arg" />
-                  <arg value="NAME=${image.name}" />
-                  <arg value="--build-arg" />
-                  <arg value="DESCRIPTION=${image.description}" />
-                  <arg value="--build-arg" />
-                  <arg value="URL=${image.url}" />
-                  <arg value="--build-arg" />
-                  <arg value="SOURCE=${image.source}" />
-                  <arg value="--build-arg" />
-                  <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
-                  <arg value="--build-arg" />
-                  <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
-                  <arg line="${image.builder.arguments}" />
-                  <arg value="." />
+                <!--
+                  Run container builds for linux/amd64, linux/ppc64le, and linux/s390x
+                  First remove any existing builds from the manifest
+                    Ant OS families: https://ant.apache.org/manual/api/org/apache/tools/ant/taskdefs/condition/Os.html
+                    "unix" covers macOS
+                  Then build each platform. We use <sequential /> as a way to do a block if condition
+                -->
+                <echo level="info" message="==================" />
+                <echo level="info" message="Removing any existing manifests" />
+                <exec osfamily="unix" dir="${project.basedir}" executable="./cleanmanifest.sh" failonerror="true">
+                  <arg value="${image.builder}" />
+                  <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                </exec>
+                <exec osfamily="windows" dir="${project.basedir}" executable="cleanmanifest.bat" failonerror="true">
+                  <arg value="${image.builder}" />
+                  <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                 </exec>
 
-                <echo level="info" message="Created local container image ${image.user}/${image.name}:${project.version}" />
                 <echo level="info" message="==================" />
-                <echo level="info" message="To run this image:" />
-                <echo level="info" message="  ${image.builder} run --rm -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.repository}${image.user}/${image.name}" />
-                <echo level="info" message="==================" />
-                <echo level="info" message="To push this image:" />
-                <echo level="info" message="  ${image.builder} push ${image.repository}${image.user}/${image.name}:${project.version} &amp;&amp; ${image.builder} push ${image.repository}${image.user}/${image.name}:latest" />
+
+                <condition property="buildlinuxamd64">
+                  <equals arg1="${image.build.linux.amd64}" arg2="true" />
+                </condition>
+          
+                <sequential if:true="${buildlinuxamd64}">
+                  <echo level="info" message="Building ${image.repository}${image.user}${image.name}:${image.tag} for linux/amd64" />
+                  <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
+                    <arg value="build" />
+                    <arg value="--platform" />
+                    <arg value="linux/amd64" />
+                    <arg value="--build-arg" />
+                    <arg value="VERSION=${project.version}" />
+                    <arg value="--build-arg" />
+                    <arg value="REVISION=${commit.id}" />
+                    <arg value="--build-arg" />
+                    <arg value="AUTHORS=${image.authors}" />
+                    <arg value="--build-arg" />
+                    <arg value="VENDOR=${image.vendor}" />
+                    <arg value="--build-arg" />
+                    <arg value="SUMMARY=${image.summary}" />
+                    <arg value="--build-arg" />
+                    <arg value="NAME=${image.name}" />
+                    <arg value="--build-arg" />
+                    <arg value="DESCRIPTION=${image.description}" />
+                    <arg value="--build-arg" />
+                    <arg value="URL=${image.url}" />
+                    <arg value="--build-arg" />
+                    <arg value="SOURCE=${image.source}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                    <!--
+                    <arg value="-t" />
+                    <arg value="${image.repository}${image.user}${image.name}:${project.version}" />
+                    <arg value="-t" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    -->
+                    <arg value="--manifest" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    <arg line="${image.builder.arguments}" />
+                    <arg value="." />
+                  </exec>
+
+                  <echo level="info" message="==================" />
+                  <echo level="info" message="Created local container image ${image.repository}${image.user}${image.name}:${image.tag} for linux/amd64" />
+                  <echo level="info" message="To run this image:" />
+                  <echo level="info" message="  ${image.builder} run --rm --platform linux/amd64 -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.repository}${image.user}${image.name}:${image.tag}" />
+                  <echo level="info" message="==================" />
+                </sequential>
+
+                <condition property="buildlinuxarm64">
+                  <equals arg1="${image.build.linux.arm64}" arg2="true" />
+                </condition>
+          
+                <sequential if:true="${buildlinuxarm64}">
+                  <echo level="info" message="Building ${image.repository}${image.user}${image.name}:${image.tag} for linux/arm64" />
+                  <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
+                    <arg value="build" />
+                    <arg value="--platform" />
+                    <arg value="linux/arm64" />
+                    <arg value="--build-arg" />
+                    <arg value="VERSION=${project.version}" />
+                    <arg value="--build-arg" />
+                    <arg value="REVISION=${commit.id}" />
+                    <arg value="--build-arg" />
+                    <arg value="AUTHORS=${image.authors}" />
+                    <arg value="--build-arg" />
+                    <arg value="VENDOR=${image.vendor}" />
+                    <arg value="--build-arg" />
+                    <arg value="SUMMARY=${image.summary}" />
+                    <arg value="--build-arg" />
+                    <arg value="NAME=${image.name}" />
+                    <arg value="--build-arg" />
+                    <arg value="DESCRIPTION=${image.description}" />
+                    <arg value="--build-arg" />
+                    <arg value="URL=${image.url}" />
+                    <arg value="--build-arg" />
+                    <arg value="SOURCE=${image.source}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                    <!--
+                    <arg value="-t" />
+                    <arg value="${image.repository}${image.user}${image.name}:${project.version}" />
+                    <arg value="-t" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    -->
+                    <arg value="--manifest" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    <arg line="${image.builder.arguments}" />
+                    <arg value="." />
+                  </exec>
+
+                  <echo level="info" message="==================" />
+                  <echo level="info" message="Created local container image ${image.repository}${image.user}${image.name}:${image.tag} for linux/arm64" />
+                  <echo level="info" message="To run this image:" />
+                  <echo level="info" message="  ${image.builder} run --rm --platform linux/arm64 -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.repository}${image.user}${image.name}:${image.tag}" />
+                  <echo level="info" message="==================" />
+                </sequential>
+
+                <condition property="buildlinuxppc64le">
+                  <equals arg1="${image.build.linux.ppc64le}" arg2="true" />
+                </condition>
+          
+                <sequential if:true="${buildlinuxppc64le}">
+                  <echo level="info" message="Building ${image.repository}${image.user}${image.name}:${image.tag} for linux/ppc64le" />
+                  <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
+                    <arg value="build" />
+                    <arg value="--platform" />
+                    <arg value="linux/ppc64le" />
+                    <arg value="--build-arg" />
+                    <arg value="VERSION=${project.version}" />
+                    <arg value="--build-arg" />
+                    <arg value="REVISION=${commit.id}" />
+                    <arg value="--build-arg" />
+                    <arg value="AUTHORS=${image.authors}" />
+                    <arg value="--build-arg" />
+                    <arg value="VENDOR=${image.vendor}" />
+                    <arg value="--build-arg" />
+                    <arg value="SUMMARY=${image.summary}" />
+                    <arg value="--build-arg" />
+                    <arg value="NAME=${image.name}" />
+                    <arg value="--build-arg" />
+                    <arg value="DESCRIPTION=${image.description}" />
+                    <arg value="--build-arg" />
+                    <arg value="URL=${image.url}" />
+                    <arg value="--build-arg" />
+                    <arg value="SOURCE=${image.source}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                    <!--
+                    <arg value="-t" />
+                    <arg value="${image.repository}${image.user}${image.name}:${project.version}" />
+                    <arg value="-t" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    -->
+                    <arg value="--manifest" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    <arg line="${image.builder.arguments}" />
+                    <arg value="." />
+                  </exec>
+
+                  <echo level="info" message="==================" />
+                  <echo level="info" message="Created local container image ${image.repository}${image.user}${image.name}:${image.tag} for linux/ppc64le" />
+                  <echo level="info" message="To run this image:" />
+                  <echo level="info" message="  ${image.builder} run --rm --platform linux/ppc64le -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.repository}${image.user}${image.name}:${image.tag}" />
+                  <echo level="info" message="==================" />
+                </sequential>
+
+                <condition property="buildlinuxs390x">
+                  <equals arg1="${image.build.linux.s390x}" arg2="true" />
+                </condition>
+          
+                <sequential if:true="${buildlinuxs390x}">
+                  <echo level="info" message="Building ${image.repository}${image.user}${image.name}:${image.tag} for linux/s390x" />
+                  <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
+                    <arg value="build" />
+                    <arg value="--platform" />
+                    <arg value="linux/s390x" />
+                    <arg value="--build-arg" />
+                    <arg value="VERSION=${project.version}" />
+                    <arg value="--build-arg" />
+                    <arg value="REVISION=${commit.id}" />
+                    <arg value="--build-arg" />
+                    <arg value="AUTHORS=${image.authors}" />
+                    <arg value="--build-arg" />
+                    <arg value="VENDOR=${image.vendor}" />
+                    <arg value="--build-arg" />
+                    <arg value="SUMMARY=${image.summary}" />
+                    <arg value="--build-arg" />
+                    <arg value="NAME=${image.name}" />
+                    <arg value="--build-arg" />
+                    <arg value="DESCRIPTION=${image.description}" />
+                    <arg value="--build-arg" />
+                    <arg value="URL=${image.url}" />
+                    <arg value="--build-arg" />
+                    <arg value="SOURCE=${image.source}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                    <!--
+                    <arg value="-t" />
+                    <arg value="${image.repository}${image.user}${image.name}:${project.version}" />
+                    <arg value="-t" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    -->
+                    <arg value="--manifest" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    <arg line="${image.builder.arguments}" />
+                    <arg value="." />
+                  </exec>
+
+                  <echo level="info" message="==================" />
+                  <echo level="info" message="Created local container image ${image.repository}${image.user}${image.name}:${image.tag} for linux/s390x" />
+                  <echo level="info" message="To run this image:" />
+                  <echo level="info" message="  ${image.builder} run --rm --platform linux/s390x -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.repository}${image.user}${image.name}:${image.tag}" />
+                  <echo level="info" message="==================" />
+                </sequential>
+
+                <!--
+                  Finally, we can push these to a remote repository if the argument is set
+                -->
+                <condition property="pushimage">
+                  <equals arg1="${image.manifest.repository.push}" arg2="true" />
+                </condition>
+                <condition property="isquay">
+                  <equals arg1="${image.manifest.repository}" arg2="quay.io" />
+                </condition>
+         
+                <sequential if:true="${pushimage}">
+                  <echo level="info" message="==================" />
+                  <echo level="info" message="Logging into ${image.manifest.repository}" />
+                  <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
+                    <arg value="login" />
+                    <arg value="${image.manifest.repository}" />
+                  </exec>
+
+                  <echo level="info" message="==================" />
+                  <echo level="info" message="Pushing manifest to ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
+                  <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
+                    <arg value="manifest" />
+                    <arg value="push" />
+                    <arg value="--all" />
+                    <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
+                    <arg value="docker://${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
+                  </exec>
+                  <echo level="info" message="Pushed manifest successfully. Test with:" />
+                  <echo level="info" message="  ${image.builder} run --rm -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
+                  <echo if:true="${isquay}" level="info" message="Quay.io home page is: https://${image.manifest.repository}/repository/${image.manifest.user}/${image.manifest.name}?tab=tags" />
+                </sequential>
+
+                <!-- else condition for the above sequential using unless:true -->
+                <echo unless:true="${pushimage}" level="info" message="Manifest not pushed to ${image.manifest.repository} by default. To push, specify -Dimage.manifest.repository.push=true" />
+
               </target>
             </configuration>
             <goals>
