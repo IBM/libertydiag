@@ -157,7 +157,7 @@
         <plugin>
           <groupId>io.openliberty.tools</groupId>
           <artifactId>liberty-maven-plugin</artifactId>
-          <version>3.7</version>
+          <version>3.7.1</version>
           <configuration>
             <serverName>${liberty.server.name}</serverName>
             <include>${liberty.packaging.type}</include>
