@@ -26,9 +26,6 @@
   <variable name="TRACE_SPECIFICATION" defaultValue="*=info" />
   <variable name="MAX_TRACE_SIZE_MB" defaultValue="100" />
   <variable name="MAX_TRACE_SIZE_COUNT" defaultValue="2" />
-  <variable name="MAX_REQUEST_SECONDS" defaultValue="60" />
-  <variable name="HUNG_REQUEST_SECONDS" defaultValue="300" />
-  <variable name="REQUEST_TIMING_SAMPLE_RATE" defaultValue="1" />
   <variable name="MAX_CONCURRENT_THREADS" defaultValue="50" />
 
   <!--
@@ -151,9 +148,9 @@
   <!-- https://openliberty.io/docs/latest/slow-hung-request-detection.html -->
   <featureManager><feature>requestTiming-1.0</feature></featureManager>
   <requestTiming
-    slowRequestThreshold="${MAX_REQUEST_SECONDS}s"
-    hungRequestThreshold="${HUNG_REQUEST_SECONDS}s"
-    sampleRate="${REQUEST_TIMING_SAMPLE_RATE}"
+    slowRequestThreshold="60s"
+    hungRequestThreshold="300s"
+    sampleRate="1"
   />
 
   <!-- https://openliberty.io/docs/latest/log-trace-configuration.html -->
