@@ -97,3 +97,15 @@ To develop in Eclipse:
 1. Tag with the same version and push
     1. `git tag 0.1.$DATE`
     1. `git push --tags`
+
+### Push new version to Quay
+
+1. On macOS, install `qemu-user-static` for cross-compilation:
+   ```
+   podman machine ssh "sudo rpm-ostree install qemu-user-static; sudo systemctl reboot"
+   ```
+1. Run:
+   ```
+   ./mvnw -Dimage.manifest.repository.push=true deploy
+   ```
+1. Confirm new build at <https://quay.io/repository/ibm/libertydiag?tab=tags>
