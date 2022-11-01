@@ -61,6 +61,7 @@ To develop in Eclipse:
 1. Example overriding variables: `mvnw -Dliberty.var.HTTP_PORT=9081 -Dliberty.var.HTTPS_PORT=9444 liberty:dev`
 1. Build WAR file and Liberty package: `mvnw package`
 1. Run Liberty in the console: `mvnw liberty:run`
+1. Run a specific version of Liberty: `mvnw -Dliberty.runtime.version=22.0.0.10 liberty:run`
 1. If you'd like to run the Liberty package as a jar: `java -jar target/libertydiag.jar`
 1. Build container with normal logging:
    ```

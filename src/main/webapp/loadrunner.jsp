@@ -1,4 +1,4 @@
-<%@ page import="com.example.servlet.LoadRunnerServlet" %>
+<%@ page import="java.util.Map, com.example.servlet.LoadRunnerServlet, com.example.loadrunner.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,65 +37,128 @@
         border: 1px solid black;
       }
 
-			hr {
-				margin-top: 30px;
-				margin-bottom: 30px;
-			}
-      </style>
+      hr {
+        margin-top: 30px;
+        margin-bottom: 30px;
+      }
+      
+      fieldset {
+        margin-bottom: 20px;
+      }
+      
+      .disabled {
+        color: gray;
+      }
+      
+      .errors {
+        color: red;
+      }
+    </style>
+    <script type="text/javascript">
+      function changeInfinite() {
+    	if (document.getElementById('infinite').checked) {
+          document.getElementById('totalrequests').disabled = true;
+          document.getElementById('totalrequestslabel').className = 'disabled';
+    	} else {
+          document.getElementById('totalrequests').disabled = false;
+          document.getElementById('totalrequestslabel').className = '';
+    	}
+      }
+    </script>
   </head>
   <body>
     <h1>Load Runner</h1>
     <%
-    if (request.getParameter("started") != null) {
+    if (LoadRunner.RUNNERS.size() > 0) {
     %>
-      <div class="notification">
-        <p>
-        Started at <%= request.getParameter("started") %>. Check messages.log for results.
-				</p>
-      </div>
+      <h2>Running</h2>
+      <p>Refresh this page for updated status (refreshing does not start a new load)</p>
+      <ol>
+      <%
+      for (Map.Entry<String, LoadRunner> runner : LoadRunner.RUNNERS.entrySet()) {
+      %>
+        <li><%= runner.getKey() %></li>
+      <%
+      }
+      %>
+      </ol>
+      <hr />
     <%
     }
-     %>
-    <p>Execute concurrent requests</p>
+    %>
+    <%
+    if (LoadRunner.COMPLETED_RUNNERS.size() > 0) {
+    %>
+      <h2>Completed</h2>
+      <ol>
+      <%
+      for (LoadRunnerResult runner : LoadRunner.COMPLETED_RUNNERS) {
+      %>
+        <li><%= runner.loadIdentifier %><%= runner.totalResults.errors == 0 ? "" : " (some errors!)" %>: <span<%= runner.totalResults.errors == 0 ? "" : " class=\"errors\"" %>><%= runner.status %></span></li>
+      <%
+      }
+      %>
+      </ol>
+      <hr />
+    <%
+    }
+    %>
+    <h2>Create New Load</h2>
     <form action="<%= LoadRunnerServlet.URL %>" method="get">
+      <fieldset>
+        <legend>Destination</legend>
+        <p>
+          <label for="url">Target URL:</label><br />
+          <input type="text" id="url" name="url" placeholder="Target URL" class="fullwidth" value="<%= request.getParameter("url") == null ? "" : request.getParameter("url") %>" required />
+        </p>
+        <p>
+          <label for="method">Method:</label><br />
+          <select name="method">
+            <option value="get" <%= "get".equals(request.getParameter("method")) ? "selected" : "" %>>GET</option>
+            <option value="post" <%= "post".equals(request.getParameter("method")) ? "selected" : "" %>>POST</option>
+            <option value="put" <%= "put".equals(request.getParameter("method")) ? "selected" : "" %>>PUT</option>
+            <option value="patch" <%= "patch".equals(request.getParameter("method")) ? "selected" : "" %>>PATCH</option>
+            <option value="delete" <%= "delete".equals(request.getParameter("method")) ? "selected" : "" %>>DELETE</option>
+            <option value="head" <%= "head".equals(request.getParameter("method")) ? "selected" : "" %>>HEAD</option>
+          </select>
+        </p>
+      </fieldset>
+      <fieldset>
+        <legend>Optional request security</legend>
+        <p>
+          <label for="user">User (if needed):</label><br />
+          <input autocomplete="new-password" type="text" id="user" name="user" placeholder="User" value="<%= request.getParameter("user") == null ? "" : request.getParameter("user") %>" />
+        </p>
+        <p>
+          <label for="password">Password (if needed):</label><br />
+          <input autocomplete="new-password" type="password" id="password" name="password" placeholder="Password" value="<%= request.getParameter("password") == null ? "" : request.getParameter("password") %>" />
+        </p>
+      </fieldset>
+      <fieldset>
+        <legend>Request volume</legend>
+        <p>
+          <label for="totalrequests" id="totalrequestslabel"<%= request.getParameter("infinite") == null ? "" : " class=\"disabled\"" %>>Total requests:</label><br />
+          <input type="number" id="totalrequests" name="totalrequests" placeholder="Total requests" value="<%= request.getParameter("totalrequests") == null ? "100" : request.getParameter("totalrequests") %>" min="1"<%= request.getParameter("infinite") == null ? "" : " disabled" %> />
+        </p>
+        <p>
+          <input type="checkbox" id="infinite" name="infinite" onchange="changeInfinite()"<%= request.getParameter("infinite") == null ? "" : " checked" %>>
+          <label for="infinite">Infinite (until manually stopped)</label>
+        </p>
+      </fieldset>
+      <fieldset>
+        <legend>Request concurrency</legend>
+        <p>
+          <label for="concurrentusers">Concurrent users:</label><br />
+          <input type="number" name="concurrentusers" placeholder="Concurrent users" value="<%= request.getParameter("concurrentusers") == null ? "5" : request.getParameter("concurrentusers") %>" min="1" />
+        </p>
+      </fieldset>
       <p>
-        <label for="url">Target URL:</label><br />
-        <input type="text" name="url" placeholder="Target URL" class="fullwidth" value="<%= request.getParameter("url") == null ? "" : request.getParameter("url") %>" required />
-      </p>
-      <p>
-        <label for="method">Method:</label><br />
-        <select name="method">
-          <option value="get" <%= "get".equals(request.getParameter("method")) ? "selected" : "" %>>GET</option>
-          <option value="post" <%= "post".equals(request.getParameter("method")) ? "selected" : "" %>>POST</option>
-          <option value="put" <%= "put".equals(request.getParameter("method")) ? "selected" : "" %>>PUT</option>
-          <option value="patch" <%= "patch".equals(request.getParameter("method")) ? "selected" : "" %>>PATCH</option>
-          <option value="delete" <%= "delete".equals(request.getParameter("method")) ? "selected" : "" %>>DELETE</option>
-          <option value="head" <%= "head".equals(request.getParameter("method")) ? "selected" : "" %>>HEAD</option>
-        </select>
-      </p>
-      <p>
-        <label for="entity">Entity (for POST/PUT/PATCH):</label><br />
+        <label for="entity">Optional request body (for POST/PUT/PATCH):</label><br />
         <textarea name="entity" rows="5" class="fullwidth"><%= request.getParameter("entity") == null ? "" : request.getParameter("entity") %></textarea>
-      </p>
-      <p>
-        <label for="concurrentusers">Concurrent users:</label><br />
-        <input type="number" name="concurrentusers" placeholder="Concurrent users" value="<%= request.getParameter("concurrentusers") == null ? "5" : request.getParameter("concurrentusers") %>" min="1" />
-      </p>
-      <p>
-        <label for="totalrequests">Total requests:</label><br />
-        <input type="number" name="totalrequests" placeholder="Total requests" value="<%= request.getParameter("totalrequests") == null ? "100" : request.getParameter("totalrequests") %>" min="1" />
-      </p>
-      <p>
-        <label for="user">User (if needed):</label><br />
-        <input autocomplete="new-password" type="text" name="user" placeholder="User" value="<%= request.getParameter("user") == null ? "" : request.getParameter("user") %>" />
-      </p>
-      <p>
-        <label for="password">Password (if needed):</label><br />
-        <input autocomplete="new-password" type="password" name="password" placeholder="Password" value="<%= request.getParameter("password") == null ? "" : request.getParameter("password") %>" />
       </p>
       <input type="submit" value="Start" />
     </form>
-		<hr />
-		<p><a href="/">Back to the home page</a></p>
+    <hr />
+    <p><a href="/">Back to the home page</a></p>
   </body>
 </html>

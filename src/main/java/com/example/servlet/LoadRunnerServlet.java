@@ -99,9 +99,11 @@ public class LoadRunnerServlet extends HttpServlet {
 			String user = request.getParameter("user");
 			String password = request.getParameter("password");
 
+			boolean infiniteRequests = request.getParameter("infinite") != null;
+
 			LoadRunner loadRunner = new LoadRunner();
 			String info = "Starting load runner (" + loadRunner + ") to " + target + " with " + concurrentusers
-					+ " concurrent users and " + totalrequests + " total requests";
+					+ " concurrent users and " + (infiniteRequests ? "infinite" : totalrequests) + " total requests";
 
 			if (user != null && user.length() > 0) {
 				info += " using user " + user;
@@ -121,6 +123,7 @@ public class LoadRunnerServlet extends HttpServlet {
 			loadRunner.setTarget(target);
 			loadRunner.setConcurrentUsers(concurrentusers);
 			loadRunner.setTotalRequests(totalrequests);
+			loadRunner.setInfiniteRequests(infiniteRequests);
 			loadRunner.setExecutorService(executorService);
 			loadRunner.setUserName(user);
 			loadRunner.setPassword(password);
@@ -133,15 +136,20 @@ public class LoadRunnerServlet extends HttpServlet {
 			// We don't actually wait for the result, instead redirect back to the form
 			// with a notification that the load runner started
 
-			response.sendRedirect("/loadrunner.jsp?started="
-					+ URLEncoder.encode(new Date().toString(), StandardCharsets.UTF_8.toString()) + "&url="
+			String redirectUrl = "/loadrunner.jsp?url="
 					+ URLEncoder.encode(urlString, StandardCharsets.UTF_8.toString()) + "&method="
 					+ URLEncoder.encode(method, StandardCharsets.UTF_8.toString()) + "&entity="
 					+ URLEncoder.encode(entity, StandardCharsets.UTF_8.toString()) + "&concurrentusers="
 					+ URLEncoder.encode(concurrentusersString, StandardCharsets.UTF_8.toString()) + "&totalrequests="
 					+ URLEncoder.encode(totalrequestsString, StandardCharsets.UTF_8.toString()) + "&user="
 					+ URLEncoder.encode(user, StandardCharsets.UTF_8.toString()) + "&password="
-					+ URLEncoder.encode(password, StandardCharsets.UTF_8.toString()));
+					+ URLEncoder.encode(password, StandardCharsets.UTF_8.toString());
+			
+			if (infiniteRequests) {
+				redirectUrl += "&infinite=on";
+			}
+
+			response.sendRedirect(redirectUrl);
 
 //			writer = startResponse(request, response, started, HttpServletResponse.SC_OK);
 //			writer.println(info);

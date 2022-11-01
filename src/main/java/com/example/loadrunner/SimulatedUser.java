@@ -44,6 +44,8 @@ public class SimulatedUser implements Callable<SimulatedUserResult> {
 	private String password;
 	private String method;
 	private String entity;
+	private boolean infiniteRequests;
+	private String loadIdentifier;
 
 	@Override
 	public SimulatedUserResult call() throws Exception {
@@ -58,7 +60,9 @@ public class SimulatedUser implements Callable<SimulatedUserResult> {
 		final SimulatedUserResult result = new SimulatedUserResult();
 
 		try {
-			for (int i = 0; i < totalRequests; i++) {
+			final long overflowPoint = Long.MAX_VALUE - 1;
+			long i = 0;
+			while (LoadRunner.RUNNERS.containsKey(loadIdentifier) && (infiniteRequests || (!infiniteRequests && i < totalRequests))) {
 				final long startTime = System.currentTimeMillis();
 				
 				WebTarget webTarget = client.target(target.toURI());
@@ -96,10 +100,15 @@ public class SimulatedUser implements Callable<SimulatedUserResult> {
 					
 					Status responseCode = response.getStatusInfo().toEnum();
 					if (responseCode != Status.OK) {
-						throw new RuntimeException("Received unexpected HTTP code: " + response.getStatusInfo());
+						if (LOG.isLoggable(Level.FINE))
+							LOG.fine(this + " unexpected HTTP code:" + response.getStatusInfo());
+						
+						result.errors++;
 					}
 					
-					// Read the whole response
+					// Read the whole response. Usually (unless trace is enabled), we won't do
+					// anything with the response; however, we still always want to read the whole
+					// response because otherwise we may not get the true response time.
 					String output = response.readEntity(String.class);
 					if (LOG.isLoggable(Level.FINE))
 						LOG.fine(this + " result body:" + output);
@@ -118,6 +127,10 @@ public class SimulatedUser implements Callable<SimulatedUserResult> {
 						response.close();
 					}
 					ApplicationCache.returnClient(client);
+				}
+				i++;
+				if (i == overflowPoint) {
+					i = 0;
 				}
 			}
 		} catch (Throwable t) {
@@ -186,5 +199,21 @@ public class SimulatedUser implements Callable<SimulatedUserResult> {
 
 	public void setClient(Client client) {
 		this.client = client;
+	}
+
+	public boolean isInfiniteRequests() {
+		return infiniteRequests;
+	}
+
+	public void setInfiniteRequests(boolean infiniteRequests) {
+		this.infiniteRequests = infiniteRequests;
+	}
+
+	public String getLoadIdentifier() {
+		return loadIdentifier;
+	}
+
+	public void setLoadIdentifier(String loadIdentifier) {
+		this.loadIdentifier = loadIdentifier;
 	}
 }

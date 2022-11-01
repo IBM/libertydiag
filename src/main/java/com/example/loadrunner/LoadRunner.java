@@ -17,9 +17,13 @@ package com.example.loadrunner;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,18 +32,24 @@ import jakarta.ws.rs.client.Client;
 
 public class LoadRunner implements Callable<LoadRunnerResult> {
 
+	public static final Map<String, LoadRunner> RUNNERS = new ConcurrentHashMap<>();
+	public static final List<LoadRunnerResult> COMPLETED_RUNNERS = Collections
+			.synchronizedList(new ArrayList<LoadRunnerResult>());
+	private static AtomicLong RUNS = new AtomicLong();
 	private static final String CLASS = LoadRunner.class.getCanonicalName();
 	private static final Logger LOG = Logger.getLogger(CLASS);
 
 	private URL target;
 	private int concurrentUsers;
 	private int totalRequests;
+	private boolean infiniteRequests;
 	private String userName;
 	private String password;
 	private String method;
 	private String entity;
 	private ManagedExecutorService executorService;
 	private ArrayList<Client> clients;
+	private String loadIdentifier;
 
 	@Override
 	public LoadRunnerResult call() throws Exception {
@@ -47,7 +57,12 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 			LOG.entering(CLASS, "call", this + " called");
 
 		final long started = System.currentTimeMillis();
+
 		LoadRunnerResult loadResult = new LoadRunnerResult();
+
+		loadIdentifier = "Run" + RUNS.incrementAndGet();
+		loadResult.loadIdentifier = loadIdentifier;
+		RUNNERS.put(loadIdentifier, this);
 
 		try {
 			List<Future<SimulatedUserResult>> futures = new ArrayList<>();
@@ -70,16 +85,22 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 				LOG.log(Level.SEVERE, "Error: " + t, t);
 		}
 
+		RUNNERS.remove(loadIdentifier);
+		COMPLETED_RUNNERS.add(loadResult);
+
 		final long finished = System.currentTimeMillis();
 		final long wallclockTime = finished - started;
 
+		loadResult.status = "Load Runner (" + this + ") finished to " + target + " in " + (finished - started)
+				+ " ms; requests: " + loadResult.totalResults.count + ", errors: " + loadResult.totalResults.errors
+				+ ", concurrency: " + concurrentUsers + ", average execution: "
+				+ String.format("%.2f", loadResult.totalResults.getAverageExecutionTime()) + " ms, max execution: "
+				+ loadResult.totalResults.maxExecutionTime + " ms, min execution: "
+				+ loadResult.totalResults.minExecutionTime + " ms, throughput: "
+				+ String.format("%.2f", loadResult.totalResults.getThroughput(wallclockTime)) + " tps";
+
 		if (LOG.isLoggable(Level.INFO))
-			LOG.info("Load Runner (" + this + ") finished in " + (finished - started) + " ms; requests: "
-					+ loadResult.totalResults.count + ", concurrency: " + concurrentUsers + ", average execution: "
-					+ String.format("%.2f", loadResult.totalResults.getAverageExecutionTime()) + " ms, max execution: "
-					+ loadResult.totalResults.maxExecutionTime + " ms, min execution: "
-					+ loadResult.totalResults.minExecutionTime + " ms, throughput: "
-					+ String.format("%.2f", loadResult.totalResults.getThroughput(wallclockTime)) + " tps");
+			LOG.info(loadResult.status);
 
 		if (LOG.isLoggable(Level.FINER))
 			LOG.exiting(CLASS, "call", this + " finished in " + wallclockTime + " ms: " + loadResult);
@@ -89,8 +110,13 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 
 	private SimulatedUser createTask() {
 		SimulatedUser user = new SimulatedUser();
+		user.setLoadIdentifier(loadIdentifier);
 		user.setTarget(target);
-		user.setTotalRequests(totalRequests / concurrentUsers);
+		if (infiniteRequests) {
+			user.setInfiniteRequests(true);
+		} else {
+			user.setTotalRequests(totalRequests / concurrentUsers);
+		}
 		user.setUserName(userName);
 		user.setPassword(password);
 		user.setMethod(method);
@@ -169,5 +195,13 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 
 	public void setClients(ArrayList<Client> clients) {
 		this.clients = clients;
+	}
+
+	public boolean isInfiniteRequests() {
+		return infiniteRequests;
+	}
+
+	public void setInfiniteRequests(boolean infiniteRequests) {
+		this.infiniteRequests = infiniteRequests;
 	}
 }

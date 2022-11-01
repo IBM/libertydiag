@@ -1,6 +1,7 @@
 package com.example.loadrunner;
 
 public class SimulatedUserResult {
+	public int errors;
 	public int count;
 	public long totalExecutionTime;
 	public long maxExecutionTime;
@@ -8,6 +9,7 @@ public class SimulatedUserResult {
 
 	public void add(SimulatedUserResult other) {
 		count += other.count;
+		errors += other.errors;
 		totalExecutionTime += other.totalExecutionTime;
 		if (other.maxExecutionTime > maxExecutionTime) {
 			maxExecutionTime = other.maxExecutionTime;
@@ -19,15 +21,15 @@ public class SimulatedUserResult {
 
 	@Override
 	public String toString() {
-		return super.toString() + " { count: " + count + ", totalExecutionTime: " + totalExecutionTime
-				+ ", maxExecutionTime: " + maxExecutionTime + ", averageExecutionTime: "
+		return super.toString() + " { count: " + count + ", errors: " + errors + ", totalExecutionTime: "
+				+ totalExecutionTime + ", maxExecutionTime: " + maxExecutionTime + ", averageExecutionTime: "
 				+ String.format("%.2f", getAverageExecutionTime()) + ", minExecutionTime: " + minExecutionTime + "}";
 	}
 
 	public double getAverageExecutionTime() {
 		return count == 0 ? 0 : (double) totalExecutionTime / (double) count;
 	}
-	
+
 	public double getThroughput(long wallclockTime) {
 		return count == 0 ? 0 : (double) count / ((double) wallclockTime / 1000D);
 	}
