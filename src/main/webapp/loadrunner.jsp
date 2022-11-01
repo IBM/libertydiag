@@ -1,5 +1,13 @@
 <%@ page import="java.util.Map, com.example.servlet.LoadRunnerServlet, com.example.loadrunner.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%
+if (request.getParameter("clear") != null) {
+  LoadRunner.clear();
+  response.sendRedirect("/loadrunner.jsp");
+}
+%>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>

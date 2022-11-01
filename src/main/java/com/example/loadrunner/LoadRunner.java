@@ -119,6 +119,8 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 	}
 	
 	public static void clear() {
+		if (LOG.isLoggable(Level.INFO))
+			LOG.info("Clearing completed runners");
 		COMPLETED_RUNNERS.clear();
 	}
 
