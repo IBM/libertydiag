@@ -76,8 +76,11 @@
       <ol>
       <%
       for (Map.Entry<String, LoadRunner> runner : LoadRunner.RUNNERS.entrySet()) {
+        LoadRunnerResult pendingResult = runner.getValue().getPendingResult();
+  		final long now = System.currentTimeMillis();
+  		final long time = now - runner.getValue().getStarted();
       %>
-        <li><%= runner.getKey() %></li>
+        <li><%= runner.getKey() %><%= pendingResult.totalResults.errors == 0 ? "" : " (some errors!)" %>: <span<%= pendingResult.totalResults.errors == 0 ? "" : " class=\"errors\"" %>><%= pendingResult.getStatus(time) %></span> | <a href="<%= LoadRunnerServlet.URL %>?stop=<%= runner.getKey() %>">Stop Run</a></li>
       <%
       }
       %>

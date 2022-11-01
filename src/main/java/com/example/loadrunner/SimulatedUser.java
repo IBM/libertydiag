@@ -46,6 +46,7 @@ public class SimulatedUser implements Callable<SimulatedUserResult> {
 	private String entity;
 	private boolean infiniteRequests;
 	private String loadIdentifier;
+	private SimulatedUserResult result;
 
 	@Override
 	public SimulatedUserResult call() throws Exception {
@@ -57,7 +58,7 @@ public class SimulatedUser implements Callable<SimulatedUserResult> {
 			encoding = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes());
 		}
 		
-		final SimulatedUserResult result = new SimulatedUserResult();
+		result = new SimulatedUserResult();
 
 		try {
 			final long overflowPoint = Long.MAX_VALUE - 1;
@@ -215,5 +216,9 @@ public class SimulatedUser implements Callable<SimulatedUserResult> {
 
 	public void setLoadIdentifier(String loadIdentifier) {
 		this.loadIdentifier = loadIdentifier;
+	}
+
+	public SimulatedUserResult getResult() {
+		return result;
 	}
 }

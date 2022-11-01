@@ -64,97 +64,114 @@ public class LoadRunnerServlet extends HttpServlet {
 		Date started = new Date();
 		PrintWriter writer = null;
 		try {
-			String urlString = request.getParameter("url");
-			if (urlString == null) {
-				throw new IllegalArgumentException("URL not provided");
+
+			String stopIdentifier = request.getParameter("stop");
+			if (stopIdentifier != null) {
+				LoadRunner.stop(stopIdentifier);
+				response.sendRedirect("/loadrunner.jsp");
+			} else if (request.getParameter("clear") != null) {
+				LoadRunner.clear();
+				response.sendRedirect("/loadrunner.jsp");
+			} else {
+				String urlString = request.getParameter("url");
+				if (urlString == null) {
+					throw new IllegalArgumentException("URL not provided");
+				}
+
+				URL target = new URL(urlString);
+
+				String method = request.getParameter("method");
+				if (method == null || method.length() == 0) {
+					throw new IllegalArgumentException("Invalid HTTP method");
+				}
+
+				String entity = request.getParameter("entity");
+
+				String concurrentusersString = request.getParameter("concurrentusers");
+				if (concurrentusersString == null || concurrentusersString.length() == 0) {
+					throw new IllegalArgumentException("Invalid concurrent users");
+				}
+				int concurrentusers = Integer.parseInt(concurrentusersString);
+				if (concurrentusers <= 0) {
+					throw new IllegalArgumentException("Concurrent users must be greater than 0");
+				}
+
+				String user = request.getParameter("user");
+				String password = request.getParameter("password");
+
+				boolean infiniteRequests = request.getParameter("infinite") != null;
+
+				int totalrequests = 0;
+
+				if (!infiniteRequests) {
+					String totalrequestsString = request.getParameter("totalrequests");
+					if (totalrequestsString == null || totalrequestsString.length() == 0) {
+						throw new IllegalArgumentException("Invalid total requests");
+					}
+					totalrequests = Integer.parseInt(totalrequestsString);
+					if (totalrequests <= 0) {
+						throw new IllegalArgumentException("Total requests must be greater than 0");
+					}
+				}
+
+				LoadRunner loadRunner = new LoadRunner();
+				String info = "Starting load runner (" + loadRunner + ") to " + target + " with " + concurrentusers
+						+ " concurrent users and " + (infiniteRequests ? "infinite" : totalrequests)
+						+ " total requests";
+
+				if (user != null && user.length() > 0) {
+					info += " using user " + user;
+				}
+
+				if (LOG.isLoggable(Level.INFO))
+					LOG.info(info);
+
+				// Create all the clients
+				ArrayList<Client> clients = new ArrayList<>();
+				ApplicationCache.fillClients(clients, concurrentusers);
+				while (clients.size() < concurrentusers) {
+					clients.add(ClientBuilder.newClient());
+				}
+
+				// Now start the actual threads
+				loadRunner.setTarget(target);
+				loadRunner.setConcurrentUsers(concurrentusers);
+				loadRunner.setTotalRequests(totalrequests);
+				loadRunner.setInfiniteRequests(infiniteRequests);
+				loadRunner.setExecutorService(executorService);
+				loadRunner.setUserName(user);
+				loadRunner.setPassword(password);
+				loadRunner.setMethod(method);
+				loadRunner.setEntity(entity);
+				loadRunner.setClients(clients);
+
+				executorService.submit(loadRunner);
+
+				// We don't actually wait for the result, instead redirect back to the form
+				// with a notification that the load runner started
+
+				String redirectUrl = "/loadrunner.jsp?url="
+						+ URLEncoder.encode(urlString, StandardCharsets.UTF_8.toString()) + "&method="
+						+ URLEncoder.encode(method, StandardCharsets.UTF_8.toString()) + "&entity="
+						+ URLEncoder.encode(entity, StandardCharsets.UTF_8.toString()) + "&concurrentusers="
+						+ URLEncoder.encode(concurrentusersString, StandardCharsets.UTF_8.toString())
+						+ "&totalrequests=" + totalrequests + "&user="
+						+ URLEncoder.encode(user, StandardCharsets.UTF_8.toString()) + "&password="
+						+ URLEncoder.encode(password, StandardCharsets.UTF_8.toString());
+
+				if (infiniteRequests) {
+					redirectUrl += "&infinite=on";
+				}
+
+				response.sendRedirect(redirectUrl);
 			}
 
-			URL target = new URL(urlString);
+			// We redirected above, so no need to write any response
 
-			String method = request.getParameter("method");
-			if (method == null || method.length() == 0) {
-				throw new IllegalArgumentException("Invalid HTTP method");
-			}
-
-			String entity = request.getParameter("entity");
-
-			String concurrentusersString = request.getParameter("concurrentusers");
-			if (concurrentusersString == null || concurrentusersString.length() == 0) {
-				throw new IllegalArgumentException("Invalid concurrent users");
-			}
-			int concurrentusers = Integer.parseInt(concurrentusersString);
-			if (concurrentusers <= 0) {
-				throw new IllegalArgumentException("Concurrent users must be greater than 0");
-			}
-
-			String totalrequestsString = request.getParameter("totalrequests");
-			if (totalrequestsString == null || totalrequestsString.length() == 0) {
-				throw new IllegalArgumentException("Invalid total requests");
-			}
-			int totalrequests = Integer.parseInt(totalrequestsString);
-			if (totalrequests <= 0) {
-				throw new IllegalArgumentException("Total requests must be greater than 0");
-			}
-
-			String user = request.getParameter("user");
-			String password = request.getParameter("password");
-
-			boolean infiniteRequests = request.getParameter("infinite") != null;
-
-			LoadRunner loadRunner = new LoadRunner();
-			String info = "Starting load runner (" + loadRunner + ") to " + target + " with " + concurrentusers
-					+ " concurrent users and " + (infiniteRequests ? "infinite" : totalrequests) + " total requests";
-
-			if (user != null && user.length() > 0) {
-				info += " using user " + user;
-			}
-
-			if (LOG.isLoggable(Level.INFO))
-				LOG.info(info);
-
-			// Create all the clients
-			ArrayList<Client> clients = new ArrayList<>();
-			ApplicationCache.fillClients(clients, concurrentusers);
-			while (clients.size() < concurrentusers) {
-				clients.add(ClientBuilder.newClient());
-			}
-
-			// Now start the actual threads
-			loadRunner.setTarget(target);
-			loadRunner.setConcurrentUsers(concurrentusers);
-			loadRunner.setTotalRequests(totalrequests);
-			loadRunner.setInfiniteRequests(infiniteRequests);
-			loadRunner.setExecutorService(executorService);
-			loadRunner.setUserName(user);
-			loadRunner.setPassword(password);
-			loadRunner.setMethod(method);
-			loadRunner.setEntity(entity);
-			loadRunner.setClients(clients);
-
-			executorService.submit(loadRunner);
-
-			// We don't actually wait for the result, instead redirect back to the form
-			// with a notification that the load runner started
-
-			String redirectUrl = "/loadrunner.jsp?url="
-					+ URLEncoder.encode(urlString, StandardCharsets.UTF_8.toString()) + "&method="
-					+ URLEncoder.encode(method, StandardCharsets.UTF_8.toString()) + "&entity="
-					+ URLEncoder.encode(entity, StandardCharsets.UTF_8.toString()) + "&concurrentusers="
-					+ URLEncoder.encode(concurrentusersString, StandardCharsets.UTF_8.toString()) + "&totalrequests="
-					+ URLEncoder.encode(totalrequestsString, StandardCharsets.UTF_8.toString()) + "&user="
-					+ URLEncoder.encode(user, StandardCharsets.UTF_8.toString()) + "&password="
-					+ URLEncoder.encode(password, StandardCharsets.UTF_8.toString());
-			
-			if (infiniteRequests) {
-				redirectUrl += "&infinite=on";
-			}
-
-			response.sendRedirect(redirectUrl);
-
-//			writer = startResponse(request, response, started, HttpServletResponse.SC_OK);
-//			writer.println(info);
-//
-//			finishResponse(writer, started);
+			// writer = startResponse(request, response, started,
+			// HttpServletResponse.SC_OK);
+			// writer.println(info);
+			// finishResponse(writer, started);
 
 		} catch (Throwable e) {
 			if (writer == null) {

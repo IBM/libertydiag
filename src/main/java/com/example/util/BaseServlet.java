@@ -20,6 +20,8 @@ import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.example.servlet.Simple;
 
@@ -33,7 +35,8 @@ public abstract class BaseServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -2490637537644072450L;
 
-	public static final boolean SUPPRESS_INVOKE_MESSAGES = Boolean.getBoolean("SUPPRESS_INVOKE_MESSAGES");
+	private static final String CLASS = BaseServlet.class.getCanonicalName();
+	private static final Logger LOG = Logger.getLogger(CLASS);
 
 	@SuppressWarnings("rawtypes")
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -79,9 +82,14 @@ public abstract class BaseServlet extends HttpServlet {
 		}
 
 		String intro = "Invoking " + name + " by " + getUser(request) + "... [" + rparamsstr + "]";
-		if (!SUPPRESS_INVOKE_MESSAGES) {
-			System.out.println(Helper.MESSAGE_PREFIX + intro);
-		}
+
+		// By default, we use INFO level because some of these diagnostic operations can be
+		// dangerous so we'd want to record in case someone does something maliciously.
+		// If the user doesn't want to see these messages, then set a trace including:
+		// com.example.util.BaseServlet=warning
+		if (LOG.isLoggable(Level.INFO))
+			LOG.info(Helper.MESSAGE_PREFIX + intro);
+
 		println(out, intro);
 
 		try {
@@ -105,9 +113,9 @@ public abstract class BaseServlet extends HttpServlet {
 		out.flush();
 
 		println(out, "Done");
-		if (!SUPPRESS_INVOKE_MESSAGES) {
-			System.out.println("libertydiag: Done " + name);
-		}
+
+		if (LOG.isLoggable(Level.INFO))
+			LOG.info("libertydiag: Done " + name);
 
 		out.println("</body>");
 		out.println("</html>");

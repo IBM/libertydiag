@@ -35,6 +35,7 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 	public static final Map<String, LoadRunner> RUNNERS = new ConcurrentHashMap<>();
 	public static final List<LoadRunnerResult> COMPLETED_RUNNERS = Collections
 			.synchronizedList(new ArrayList<LoadRunnerResult>());
+
 	private static AtomicLong RUNS = new AtomicLong();
 	private static final String CLASS = LoadRunner.class.getCanonicalName();
 	private static final Logger LOG = Logger.getLogger(CLASS);
@@ -50,15 +51,19 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 	private ManagedExecutorService executorService;
 	private ArrayList<Client> clients;
 	private String loadIdentifier;
+	private LoadRunnerResult loadResult;
+	private List<SimulatedUser> users;
+	private long started;
 
 	@Override
 	public LoadRunnerResult call() throws Exception {
 		if (LOG.isLoggable(Level.FINER))
 			LOG.entering(CLASS, "call", this + " called");
 
-		final long started = System.currentTimeMillis();
+		started = System.currentTimeMillis();
 
-		LoadRunnerResult loadResult = new LoadRunnerResult();
+		loadResult = new LoadRunnerResult();
+		users = new ArrayList<>();
 
 		loadIdentifier = "Run" + RUNS.incrementAndGet();
 		loadResult.loadIdentifier = loadIdentifier;
@@ -68,6 +73,7 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 			List<Future<SimulatedUserResult>> futures = new ArrayList<>();
 			for (int i = 0; i < concurrentUsers; i++) {
 				SimulatedUser task = createTask();
+				users.add(task);
 				futures.add(executorService.submit(task));
 			}
 
@@ -85,27 +91,58 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 				LOG.log(Level.SEVERE, "Error: " + t, t);
 		}
 
+		if (RUNNERS.containsKey(loadIdentifier)) {
+			final long time = finishRunner(loadIdentifier, this, loadResult);
+
+			if (LOG.isLoggable(Level.INFO))
+				LOG.info(loadResult.status);
+
+			if (LOG.isLoggable(Level.FINER))
+				LOG.exiting(CLASS, "call", this + " finished in " + time + " ms: " + loadResult);
+		} else {
+			// Runner was stopped
+		}
+		return loadResult;
+	}
+
+	public static long stop(String loadIdentifier) {
+		long result = -1;
+		LoadRunner runner = RUNNERS.get(loadIdentifier);
+		if (runner != null) {
+			LoadRunnerResult stoppedResults = runner.getPendingResult();
+			stoppedResults.loadIdentifier = loadIdentifier;
+			runner.loadResult = stoppedResults;
+			result = finishRunner(loadIdentifier, runner, stoppedResults);
+			stoppedResults.status += " ; Stopped early";
+		}
+		return result;
+	}
+	
+	public static void clear() {
+		COMPLETED_RUNNERS.clear();
+	}
+
+	private static synchronized long finishRunner(String loadIdentifier, LoadRunner runner,
+			LoadRunnerResult accumulatedResults) {
+
 		RUNNERS.remove(loadIdentifier);
-		COMPLETED_RUNNERS.add(loadResult);
+		COMPLETED_RUNNERS.add(accumulatedResults);
 
 		final long finished = System.currentTimeMillis();
-		final long wallclockTime = finished - started;
+		final long time = finished - runner.started;
 
-		loadResult.status = "Load Runner (" + this + ") finished to " + target + " in " + (finished - started)
-				+ " ms; requests: " + loadResult.totalResults.count + ", errors: " + loadResult.totalResults.errors
-				+ ", concurrency: " + concurrentUsers + ", average execution: "
-				+ String.format("%.2f", loadResult.totalResults.getAverageExecutionTime()) + " ms, max execution: "
-				+ loadResult.totalResults.maxExecutionTime + " ms, min execution: "
-				+ loadResult.totalResults.minExecutionTime + " ms, throughput: "
-				+ String.format("%.2f", loadResult.totalResults.getThroughput(wallclockTime)) + " tps";
+		accumulatedResults.status = "Load Runner (" + loadIdentifier + ") finished to " + runner.target + " in "
+				+ (finished - runner.started) + " ms; concurrency: " + runner.concurrentUsers + ", "
+				+ accumulatedResults.getStatus(time);
+		return time;
+	}
 
-		if (LOG.isLoggable(Level.INFO))
-			LOG.info(loadResult.status);
-
-		if (LOG.isLoggable(Level.FINER))
-			LOG.exiting(CLASS, "call", this + " finished in " + wallclockTime + " ms: " + loadResult);
-
-		return loadResult;
+	public LoadRunnerResult getPendingResult() {
+		LoadRunnerResult result = new LoadRunnerResult();
+		for (SimulatedUser user : users) {
+			result.totalResults.add(user.getResult());
+		}
+		return result;
 	}
 
 	private SimulatedUser createTask() {
@@ -203,5 +240,13 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 
 	public void setInfiniteRequests(boolean infiniteRequests) {
 		this.infiniteRequests = infiniteRequests;
+	}
+
+	public LoadRunnerResult getLoadResult() {
+		return loadResult;
+	}
+
+	public long getStarted() {
+		return started;
 	}
 }
