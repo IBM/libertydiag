@@ -18,6 +18,7 @@ package com.example.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
@@ -37,6 +38,13 @@ public abstract class BaseServlet extends HttpServlet {
 
 	private static final String CLASS = BaseServlet.class.getCanonicalName();
 	private static final Logger LOG = Logger.getLogger(CLASS);
+	
+	private static final ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>() {
+		@Override
+		protected SimpleDateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		}
+	};
 
 	@SuppressWarnings("rawtypes")
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -177,7 +185,11 @@ public abstract class BaseServlet extends HttpServlet {
 	}
 
 	protected void println(PrintWriter out, String message, boolean flush, boolean br) {
-		out.println("[" + new Date() + "] " + message + (br ? "<br />" : ""));
+		BaseServlet.print(out, message, flush, br);
+	}
+	
+	public static void print(PrintWriter out, String message, boolean flush, boolean br) {
+		out.println("[" + sdf.get().format(new Date()) + "] " + message + (br ? "<br />" : ""));
 		if (flush) {
 			out.flush();
 		}
