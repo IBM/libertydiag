@@ -113,7 +113,7 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 			stoppedResults.loadIdentifier = loadIdentifier;
 			runner.loadResult = stoppedResults;
 			result = finishRunner(loadIdentifier, runner, stoppedResults);
-			stoppedResults.status += " ; Stopped early";
+			stoppedResults.status += " ; Manually stopped";
 		}
 		return result;
 	}
