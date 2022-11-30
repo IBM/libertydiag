@@ -141,11 +141,19 @@
   <!--
     For common specifications, see https://www.ibm.com/support/pages/set-trace-and-get-full-dump-websphere-liberty
     HTTP (simple): *=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all
+    
+    We hide the message CWMOT0000E: Lookup of the application name in JNDI did not return a value. A default name is used for Opentracing service name.
+    The reason is convoluted: We want to use Jakarta EE Web profile instead of Full profile. This means we can't use
+    ManagedExecutorService. Similarly, we can't use ManagedExecutor from mpContextPropagation because we only
+    want to use microProfile-5.0 which doesn't include mpContextPropagation. The LoadRunner uses the Jakarta RESTful Web Services
+    client and thus OpenTracing tries to hook in. Therefore, when we execute the load runner, we have to just use a vanilla
+    ExecutorService which doesn't have any MP application context that OpenTracing can use to look up the application name.
   -->
   <logging
     traceSpecification="${TRACE_SPECIFICATION}"
     maxFileSize="${MAX_TRACE_SIZE_MB}"
     maxFiles="${MAX_TRACE_SIZE_COUNT}"
+    hideMessage="CWMOT0000E"
   />
 
   <!--
