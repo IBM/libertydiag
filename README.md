@@ -1,6 +1,6 @@
 # libertydiag
 
-`libertydiag` is a [Jakarta EE 9](https://openliberty.io/docs/latest/jakarta-ee.html) and [MicroProfile 5](https://openliberty.io/docs/latest/microprofile.html) web application for simulating diagnostic situations.
+`libertydiag` is a [MicroProfile 5](https://openliberty.io/docs/latest/microprofile.html) and [Jakarta EE 9 (Web Profile)](https://openliberty.io/docs/latest/jakarta-ee.html) web application for simulating diagnostic situations.
 
 Running this application in production should be done with care because it may be used to execute various powerful functions.
 
@@ -12,7 +12,7 @@ This application [requires](https://www.ibm.com/docs/en/was-liberty/base?topic=m
 
 ```
   <featureManager>
-    <feature>jakartaee-9.1</feature>
+    <feature>webProfile-9.1</feature>
     <feature>microProfile-5.0</feature>
   <featureManager>
 ```
