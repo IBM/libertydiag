@@ -62,6 +62,9 @@ COPY --chown=default:root src/main/liberty/config/configDropins/defaults/advance
 # Remove redundant config
 RUN rm /config/configDropins/defaults/open-default-port.xml
 
+# Required for Liberty Operator with manageTLS: true
+RUN chmod a+w /config/configDropins/defaults/keystore.xml
+
 # This script will add the requested XML snippets to enable Liberty features and grow image to be fit-for-purpose using featureUtility. 
 # Only available in 'kernel-slim'. The 'full' tag already includes all features for convenience.
 RUN features.sh
