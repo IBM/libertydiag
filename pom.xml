@@ -45,7 +45,7 @@
     <liberty.var.HTTPS_PORT>9443</liberty.var.HTTPS_PORT>
     <liberty.var.MAX_TRACE_SIZE_MB>100</liberty.var.MAX_TRACE_SIZE_MB>
     <liberty.var.MAX_TRACE_SIZE_COUNT>2</liberty.var.MAX_TRACE_SIZE_COUNT>
-    <liberty.var.MAX_CONCURRENT_THREADS>100</liberty.var.MAX_CONCURRENT_THREADS>
+    <liberty.var.MAX_CONCURRENT_THREADS>50</liberty.var.MAX_CONCURRENT_THREADS>
     <liberty.var.TRACE_SPECIFICATION>*=info</liberty.var.TRACE_SPECIFICATION>
     
     <!--____________________________
@@ -107,18 +107,27 @@
 
   <dependencies>
     <dependency>
-      <groupId>jakarta.platform</groupId>
-      <artifactId>jakarta.jakartaee-api</artifactId>
-      <version>9.1.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.microprofile</groupId>
       <artifactId>microprofile</artifactId>
       <version>5.0</version>
       <type>pom</type>
       <scope>provided</scope>
     </dependency>
+    <!--
+    We don't need much from JakartaEE Full, so use the Web profile instead
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>9.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    -->
+    <dependency>
+	  <groupId>jakarta.platform</groupId>
+	  <artifactId>jakarta.jakartaee-web-api</artifactId>
+	  <version>9.1.0</version>
+	  <scope>provided</scope>
+	</dependency>
   </dependencies>
 
   <build>

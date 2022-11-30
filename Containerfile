@@ -47,9 +47,17 @@ LABEL \
   org.opencontainers.image.licenses="${LICENSE}" \
   license="${LICENSE}"
 
+COPY --chown=default:root src/main/liberty/config/server.xml /config/server.xml
+COPY --chown=default:root src/main/liberty/config/jvm.options /config/jvm.options
+COPY --chown=default:root src/main/liberty/config/bootstrap.properties /config/bootstrap.properties
+COPY --chown=default:root src/main/liberty/config/server.env /config/server.env
+
 # /config/configDropins/defaults/keystore.xml is overwritten directly instead of being put
 # in overrides/keystore.xml to avoid the CWWKG0102I message
-COPY --chown=default:root src/main/liberty/config /config
+COPY --chown=default:root src/main/liberty/config/configDropins/defaults/keystore.xml /config/configDropins/defaults/keystore.xml
+
+# Only used if we have more advanced features
+COPY --chown=default:root src/main/liberty/config/configDropins/defaults/advanced.xml /config/configDropins/defaults/advanced.xml
 
 # Remove redundant config
 RUN rm /config/configDropins/defaults/open-default-port.xml

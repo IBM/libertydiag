@@ -27,7 +27,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.enterprise.concurrent.ManagedExecutorService;
+import com.example.loadrunner.concurrent.ThreadLauncher;
+
 import jakarta.ws.rs.client.Client;
 
 public class LoadRunner implements Callable<LoadRunnerResult> {
@@ -48,7 +49,7 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 	private String password;
 	private String method;
 	private String entity;
-	private ManagedExecutorService executorService;
+	private ThreadLauncher threadLauncher;
 	private ArrayList<Client> clients;
 	private String loadIdentifier;
 	private LoadRunnerResult loadResult;
@@ -72,9 +73,9 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 		try {
 			List<Future<SimulatedUserResult>> futures = new ArrayList<>();
 			for (int i = 0; i < concurrentUsers; i++) {
-				SimulatedUser task = createTask();
-				users.add(task);
-				futures.add(executorService.submit(task));
+				SimulatedUser user = createTask();
+				users.add(user);
+				futures.add(threadLauncher.launch(user));
 			}
 
 			while (!futures.isEmpty()) {
@@ -188,12 +189,12 @@ public class LoadRunner implements Callable<LoadRunnerResult> {
 		this.totalRequests = totalRequests;
 	}
 
-	public ManagedExecutorService getExecutorService() {
-		return executorService;
+	public ThreadLauncher getThreadLauncher() {
+		return threadLauncher;
 	}
 
-	public void setExecutorService(ManagedExecutorService executorService) {
-		this.executorService = executorService;
+	public void setThreadLauncher(ThreadLauncher threadLauncher) {
+		this.threadLauncher = threadLauncher;
 	}
 
 	public String getUserName() {

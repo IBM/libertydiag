@@ -8,14 +8,16 @@ public class SimulatedUserResult {
 	public long minExecutionTime;
 
 	public void add(SimulatedUserResult other) {
-		count += other.count;
-		errors += other.errors;
-		totalExecutionTime += other.totalExecutionTime;
-		if (other.maxExecutionTime > maxExecutionTime) {
-			maxExecutionTime = other.maxExecutionTime;
-		}
-		if (minExecutionTime == 0 || other.minExecutionTime < minExecutionTime) {
-			minExecutionTime = other.minExecutionTime;
+		if (other != null) {
+			count += other.count;
+			errors += other.errors;
+			totalExecutionTime += other.totalExecutionTime;
+			if (other.maxExecutionTime > maxExecutionTime) {
+				maxExecutionTime = other.maxExecutionTime;
+			}
+			if (minExecutionTime == 0 || other.minExecutionTime < minExecutionTime) {
+				minExecutionTime = other.minExecutionTime;
+			}
 		}
 	}
 

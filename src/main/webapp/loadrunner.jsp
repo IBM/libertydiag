@@ -101,15 +101,18 @@ if (request.getParameter("clear") != null) {
     if (LoadRunner.COMPLETED_RUNNERS.size() > 0) {
     %>
       <h2>Completed</h2>
-      <ol>
-      <%
-      for (LoadRunnerResult runner : LoadRunner.COMPLETED_RUNNERS) {
-      %>
-        <li><%= runner.loadIdentifier %><%= runner.totalResults.errors == 0 ? "" : " (some errors!)" %>: <span<%= runner.totalResults.errors == 0 ? "" : " class=\"errors\"" %>><%= runner.status %></span></li>
-      <%
-      }
-      %>
-      </ol>
+      <details>
+        <summary>Expand to see all completed runs</summary>
+        <ol>
+        <%
+        for (LoadRunnerResult runner : LoadRunner.COMPLETED_RUNNERS) {
+        %>
+          <li><%= runner.loadIdentifier %><%= runner.totalResults.errors == 0 ? "" : " (some errors!)" %>: <span<%= runner.totalResults.errors == 0 ? "" : " class=\"errors\"" %>><%= runner.status %></span></li>
+        <%
+        }
+        %>
+        </ol>
+      </details>
       <hr />
     <%
     }

@@ -25,12 +25,15 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import com.example.loadrunner.LoadRunner;
+import com.example.loadrunner.concurrent.ThreadLauncher;
+import com.example.loadrunner.concurrent.VanillaThreadLauncher;
 import com.example.util.ApplicationCache;
 import com.example.util.Constants;
 
-import jakarta.annotation.Resource;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,8 +59,12 @@ public class LoadRunnerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	@Resource(lookup = "concurrent/executorService1")
-	private ManagedExecutorService executorService;
+	// @Resource(lookup = "concurrent/executorService1")
+	// private ManagedExecutorService executorService;
+
+	@Inject
+	@ConfigProperty(name = "MAX_CONCURRENT_THREADS")
+	private int maxThreads;
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -133,19 +140,21 @@ public class LoadRunnerServlet extends HttpServlet {
 					clients.add(ClientBuilder.newClient());
 				}
 
+				ThreadLauncher threadLauncher = VanillaThreadLauncher.getSingleton(maxThreads);
+
 				// Now start the actual threads
 				loadRunner.setTarget(target);
 				loadRunner.setConcurrentUsers(concurrentusers);
 				loadRunner.setTotalRequests(totalrequests);
 				loadRunner.setInfiniteRequests(infiniteRequests);
-				loadRunner.setExecutorService(executorService);
+				loadRunner.setThreadLauncher(threadLauncher);
 				loadRunner.setUserName(user);
 				loadRunner.setPassword(password);
 				loadRunner.setMethod(method);
 				loadRunner.setEntity(entity);
 				loadRunner.setClients(clients);
 
-				executorService.submit(loadRunner);
+				threadLauncher.launch(loadRunner);
 
 				// We don't actually wait for the result, instead redirect back to the form
 				// with a notification that the load runner started
