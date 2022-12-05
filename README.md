@@ -94,7 +94,7 @@ To develop in Eclipse:
    ```
 1. Build container and push the manifest to [quay.io/ibm/libertydiag](https://quay.io/repository/ibm/libertydiag?tab=tags):
     1. `podman login quay.io`
-    1. `mvnw -Dimage.manifest.repository.push=true clean deploy`
+    1. `mvnw -Dimage.build.instanton=true -Dimage.manifest.repository.push=true clean deploy`
 
 ### Build Issues
 
@@ -131,6 +131,6 @@ To develop in Eclipse:
    ```
 1. Run:
    ```
-   ./mvnw -Dimage.manifest.repository.push=true clean deploy
+   ./mvnw -Dimage.build.instanton=true -Dimage.manifest.repository.push=true clean deploy
    ```
 1. Confirm new build at <https://quay.io/repository/ibm/libertydiag?tab=tags>
