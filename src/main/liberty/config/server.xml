@@ -118,6 +118,12 @@
     </application-bnd>
   </webApplication>
 
+  <!--
+    In constrained environments, it might reasonably take up to
+    about a minute for the application to start.
+  -->
+  <applicationManager startTimeout="60s" />
+
   <!--_______________________
       |                     |
       | Other configuration |
