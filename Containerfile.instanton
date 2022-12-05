@@ -68,4 +68,3 @@ EXPOSE ${HTTP_PORT} ${HTTPS_PORT}
 
 # This script will add the requested server configurations, apply any interim fixes and populate caches to optimize runtime
 RUN configure.sh
- 
