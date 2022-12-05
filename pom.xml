@@ -82,6 +82,9 @@
     <!-- TODO: The Liberty build fails for s390x on the `RUN features.sh` step at the time of this writing -->
     <image.build.linux.s390x>false</image.build.linux.s390x>
 
+    <!-- Building the 'instant on' image may not work on all platforms -->
+    <image.build.instanton>false</image.build.instanton>
+
     <image.manifest.repository.push>false</image.manifest.repository.push>
 
     <image.manifest.repository>quay.io</image.manifest.repository>
@@ -437,6 +440,92 @@
                   <echo level="info" message="==================" />
                 </sequential>
 
+                
+                <sequential if:true="${image.build.instanton}">
+                  <echo level="info" message="Building ${image.repository}${image.user}${image.name}:instanton-temp for linux/amd64" />
+                  <!-- InstantOn is currently limited to podman -->
+                  <exec dir="${project.basedir}" executable="podman" failonerror="true">
+                    <arg value="build" />                
+                    <arg value="--platform" />
+                    <arg value="linux/amd64" />
+                    <arg value="--cap-add"/>
+                    <arg value="CHECKPOINT_RESTORE"/>
+                    <arg value="--cap-add"/>
+                    <arg value="NET_ADMIN"/>
+                    <arg value="--cap-add"/>
+                    <arg value="SYS_PTRACE"/>
+                    <arg value="--security-opt"/>
+                    <arg value="seccomp=unconfined"/>
+                    <arg value="--build-arg" />
+                    <arg value="VERSION=${project.version}" />
+                    <arg value="--build-arg" />
+                    <arg value="REVISION=${commit.id}" />
+                    <arg value="--build-arg" />
+                    <arg value="AUTHORS=${image.authors}" />
+                    <arg value="--build-arg" />
+                    <arg value="VENDOR=${image.vendor}" />
+                    <arg value="--build-arg" />
+                    <arg value="SUMMARY=${image.summary}" />
+                    <arg value="--build-arg" />
+                    <arg value="NAME=${image.name}" />
+                    <arg value="--build-arg" />
+                    <arg value="DESCRIPTION=${image.description}" />
+                    <arg value="--build-arg" />
+                    <arg value="URL=${image.url}" />
+                    <arg value="--build-arg" />
+                    <arg value="SOURCE=${image.source}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
+                    <arg value="--build-arg" />
+                    <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />    
+                    <arg value="--file" />
+                    <arg value="Containerfile.instanton"/>           
+                    <arg value="-t"/>     
+                    <arg value="${image.repository}${image.user}${image.name}:instanton-temp" />
+                    <arg line="${image.builder.arguments}" />
+                    <arg value="." />
+                  </exec>
+
+                  <!-- Run the image to generate the CheckPoint container -->
+                  <echo level="info" message="Running ${image.repository}${image.user}${image.name}:instanton for linux/amd64 to generate checkpoint"/>
+                  <exec dir="${project.basedir}" executable="podman" failonerror="true">
+                    <arg value="run"/>
+                    <arg value="--platform"/>
+                    <arg value="linux/amd64" />      
+                    <arg value="--name"/>
+                    <arg value="instanton-temp"/>                                
+                    <arg value="--privileged"/>
+                    <arg value="--env"/>
+                    <arg value="WLP_CHECKPOINT=applications"/>
+                    <arg value="${image.repository}${image.user}${image.name}:instanton-temp" />
+                  </exec>
+
+                  <echo level="info" message="Committing ${image.repository}${image.user}${image.name}:instanton for linux/amd64"/>
+                  <exec dir="${project.basedir}" executable="podman" failonerror="true">
+                    <arg value="commit"/>
+                    <arg value="instanton-temp"/>
+                    <arg value="${image.repository}${image.user}${image.name}:instanton"/>
+                  </exec>
+
+                  <echo level="info" message="Removing temporary container"/>
+                  <exec dir="${project.basedir}" executable="podman" failonerror="true">                 
+                    <arg value="rm"/>
+                    <arg value="instanton-temp"/>
+                  </exec>
+
+                  <echo level="info" message="Removing temporary image"/>
+                  <exec dir="${project.basedir}" executable="podman" failonerror="true">              
+                    <arg value="rmi"/>
+                    <arg value="${image.repository}${image.user}${image.name}:instanton-temp"/>
+                  </exec>
+
+                  <echo level="info" message="==================" />
+                  <echo level="info" message="Created local container image ${image.repository}${image.user}${image.name}:instanton for linux/amd64" />
+                  <echo level="info" message="To run this image:" />
+                  <echo level="info" message="  ${image.builder} run --rm --privileged --platform linux/amd64 -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.repository}${image.user}${image.name}:instanton" />
+                  <echo level="info" message="==================" />
+                </sequential>
+
                 <!--
                   Finally, we can push these to a remote repository if the argument is set
                 -->
@@ -458,8 +547,16 @@
                     <arg value="docker://${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
                   </exec>
                   <echo level="info" message="Pushed manifest successfully. Test with:" />
-                  <echo level="info" message="  ${image.builder} run --rm -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
+                  <echo level="info" message="  ${image.builder} run --rm -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />                
                   <echo if:true="${image.manifest.repository}" level="info" message="Quay.io home page is: https://${image.manifest.repository}/repository/${image.manifest.user}/${image.manifest.name}?tab=tags" />
+                  <sequential if:true="${image.build.instanton}">
+                          <echo level="info" message="Pushing InstantOn image"/>
+                          <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
+                                  <arg value="push"/>
+                                  <arg value="${image.repository}${image.user}${image.name}:instanton"/>
+                                  <arg value="${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:instanton"/>
+                          </exec>
+                  </sequential>
                 </sequential>
 
                 <!-- else condition for the above sequential using unless:true -->
