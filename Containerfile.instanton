@@ -1,4 +1,3 @@
-# We use IBM Java 8 so that we can use the Health Center sampling profiler
 FROM icr.io/appcafe/open-liberty:beta-instanton
 
 # These defaults are overridden by `--build-arg` arguments in pom.xml
