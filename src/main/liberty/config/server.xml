@@ -27,6 +27,8 @@
   <variable name="MAX_TRACE_SIZE_MB" defaultValue="100" />
   <variable name="MAX_TRACE_SIZE_COUNT" defaultValue="2" />
   <variable name="MAX_CONCURRENT_THREADS" defaultValue="50" />
+  <variable name="BASIC_ADMIN_PASSWORD" defaultValue="password" />
+  <variable name="BASIC_USER_PASSWORD" defaultValue="password" />
 
   <!--
     In a container environment, X_LOG_DIR points to /logs/, but it doesn't 
@@ -81,8 +83,8 @@
   <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
 
   <basicRegistry id="basic" realm="BasicRealm">
-    <user name="admin" password="password" />
-    <user name="user1" password="password" />
+    <user name="admin" password="${BASIC_ADMIN_PASSWORD}" />
+    <user name="user1" password="${BASIC_USER_PASSWORD}" />
     <group name="Users">
       <member name="user1" />
     </group>
