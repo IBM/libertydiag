@@ -59,6 +59,9 @@ COPY --chown=default:root src/main/liberty/config/configDropins/defaults/keystor
 # Remove redundant config
 RUN rm /config/configDropins/defaults/open-default-port.xml
 
+# Required for Liberty Operator with manageTLS: true
+RUN chmod a+w /config/configDropins/defaults/keystore.xml
+
 COPY --chown=default:root target/*.war /config/apps
 
 # Maven generates a variables file that will override the defaults
