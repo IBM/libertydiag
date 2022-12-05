@@ -129,10 +129,11 @@
   <mpMetrics authentication="false" />
 
   <!--
-    By default, without a filter attribute, mpMetrics enables all monitor-1.0 metrics.
-    The list of metrics may also be specified explicitly with a comma-separated list
-    as is done below. Alternatively, a space (" ") for the filter attribute disables
-    all but the base and app metrics which has less performance overhead.
+    By default, without a filter attribute on <monitor />, mpMetrics enables all
+    monitor-1.0 metrics. The list of metrics may also be specified explicitly with
+    a comma-separated list as is done below. Alternatively, a space (" ") for the
+    filter attribute disables all but the base and app metrics which has less
+    performance overhead.
   -->
   <monitor filter="JVM,ThreadPool,WebContainer,Session,ConnectionPool,REST" />
 
