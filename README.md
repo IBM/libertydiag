@@ -78,14 +78,19 @@ To develop in Eclipse:
    ```
    java -jar target/libertydiag.jar
    ```
-1. Build container with normal logging:
-   ```
-   ./mvnw -Dimage.builder.arguments="--build-arg WLP_LOGGING_CONSOLE_FORMAT='SIMPLE' --build-arg WLP_LOGGING_CONSOLE_LOGLEVEL='INFO' --build-arg WLP_LOGGING_CONSOLE_SOURCE='message'" deploy
-   ```
 1. Build container:
    ```
    ./mvnw clean deploy
    podman run --rm --platform linux/amd64 -p 9080:9080 -p 9443:9443 -it localhost/libertydiag:latest
+   ```
+1. Build container with InstantOn:
+   ```
+   ./mvnw -Dimage.build.instanton=true clean deploy
+   podman run --rm --privileged --platform linux/amd64 -p 9080:9080 -p 9443:9443 -it localhost/libertydiag:instanton
+   ```
+1. Build container with normal logging:
+   ```
+   ./mvnw -Dimage.builder.arguments="--build-arg WLP_LOGGING_CONSOLE_FORMAT='SIMPLE' --build-arg WLP_LOGGING_CONSOLE_LOGLEVEL='INFO' --build-arg WLP_LOGGING_CONSOLE_SOURCE='message'" deploy
    ```
 1. Build container and push the manifest to [quay.io/ibm/libertydiag](https://quay.io/repository/ibm/libertydiag?tab=tags):
     1. `podman login quay.io`
