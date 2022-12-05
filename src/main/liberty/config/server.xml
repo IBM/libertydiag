@@ -129,13 +129,12 @@
   <mpMetrics authentication="false" />
 
   <!--
-    By default, mpMetrics enables all monitor-1.0 metrics. A space for a filter
-    disables these metrics and just leaves base and app metrics which has less
-    performance overhead. If needed, enable additional metrics by replacing the
-    space with a command-delimited list from:
-    JVM,ThreadPool,WebContainer,Session,ConnectionPool,REST
+    By default, without a filter attribute, mpMetrics enables all monitor-1.0 metrics.
+    The list of metrics may also be specified explicitly with a comma-separated list
+    as is done below. Alternatively, a space (" ") for the filter attribute disables
+    all but the base and app metrics which has less performance overhead.
   -->
-  <monitor filter=" " />
+  <monitor filter="JVM,ThreadPool,WebContainer,Session,ConnectionPool,REST" />
 
   <!-- https://openliberty.io/docs/latest/log-trace-configuration.html -->
   <!--
