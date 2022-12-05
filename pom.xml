@@ -265,15 +265,13 @@
                     <equals arg1="${rc}" arg2="125" />
                   </condition>
                   <sequential if:true="${conditionResult}">
-                    <echo level="info" message="Code 125 means the manifest already exists. Recreating it..." />
-                    <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
-                      <arg value="manifest" />
-                      <arg value="rm" />
+                    <echo level="info" message="Code 125 means the manifest already exists. Clearing it..." />
+                    <exec osfamily="unix" dir="${project.basedir}" executable="./cleanmanifest.sh" failonerror="true">
+                      <arg value="${image.builder}" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                     </exec>
-                    <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
-                      <arg value="manifest" />
-                      <arg value="create" />
+                    <exec osfamily="windows" dir="${project.basedir}" executable="cleanmanifest.bat" failonerror="true">
+                      <arg value="${image.builder}" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                     </exec>
                   </sequential>
@@ -293,15 +291,13 @@
                     <equals arg1="${rc}" arg2="125" />
                   </condition>
                   <sequential if:true="${conditionResult}">
-                    <echo level="info" message="Code 125 means the manifest already exists. Recreating it..." />
-                    <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
-                      <arg value="manifest" />
-                      <arg value="rm" />
+                    <echo level="info" message="Code 125 means the manifest already exists. Clearing it..." />
+                    <exec osfamily="unix" dir="${project.basedir}" executable="./cleanmanifest.sh" failonerror="true">
+                      <arg value="${image.builder}" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.build.instanton.tag}" />
                     </exec>
-                    <exec dir="${project.basedir}" executable="${image.builder}" failonerror="true">
-                      <arg value="manifest" />
-                      <arg value="create" />
+                    <exec osfamily="windows" dir="${project.basedir}" executable="cleanmanifest.bat" failonerror="true">
+                      <arg value="${image.builder}" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.build.instanton.tag}" />
                     </exec>
                   </sequential>
