@@ -591,7 +591,7 @@
                       <arg value="docker://${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
                     </exec>
                     <echo level="info" message="Pushed manifest successfully. Test with:" />
-                    <echo level="info" message="  ${image.builder} run --rm -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
+                    <echo level="info" message="  ${image.builder} run --pull=newer --rm -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.manifest.tag}" />
                   </sequential>
 
                   <sequential if:true="${image.build.instanton}">
@@ -611,7 +611,7 @@
                       <arg value="docker://${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.build.instanton.tag}" />
                     </exec>
                     <echo level="info" message="Pushed InstantOn manifest successfully. Test with:" />
-                    <echo level="info" message="  ${image.builder} run --rm --privileged -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.build.instanton.tag}" />
+                    <echo level="info" message="  ${image.builder} run --pull=newer --rm --privileged -p ${liberty.var.HTTP_PORT}:${liberty.var.HTTP_PORT} -p ${liberty.var.HTTPS_PORT}:${liberty.var.HTTPS_PORT} -it ${image.manifest.repository}/${image.manifest.user}/${image.manifest.name}:${image.build.instanton.tag}" />
                   </sequential>
 
                   <echo level="info" message="Quay.io home page is: https://${image.manifest.repository}/repository/${image.manifest.user}/${image.manifest.name}?tab=tags" />
