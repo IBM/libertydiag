@@ -226,7 +226,9 @@
                   * https://ant.apache.org/manual/Tasks/exec.html
                   * https://ant.apache.org/manual/ifunless.html
                   * https://ant.apache.org/manual/Tasks/conditions.html
-                  * We use <sequential /> as a way to do a block if condition and then an unless:true for an else condition
+                  * https://ant.apache.org/manual/Tasks/echo.html
+                  * We use <sequential /> as a way to do a block if condition and then an unless:true for an else condition.
+                  * Combine the <sequential /> with a <condition /> to do various logic.
                 -->
 
                 <echo level="info" message="==================" />
