@@ -8,7 +8,7 @@ Running this application in production should be done with care because it may b
 
 Download `libertydiag.war` from the latest release at <https://github.com/IBM/libertydiag/releases/latest>
 
-This application [requires](https://www.ibm.com/docs/en/was-liberty/base?topic=management-liberty-features) Liberty >= 22.0.0.1 and the following features to be installed:
+This application [requires](https://www.ibm.com/docs/en/was-liberty/base?topic=management-liberty-features) Liberty >= 22.0.0.1 and at least the following features to be installed:
 
 ```
   <featureManager>
