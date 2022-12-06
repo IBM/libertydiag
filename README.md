@@ -25,6 +25,12 @@ podman run --rm -p 9080:9080 -p 9443:9443 -it quay.io/ibm/libertydiag
 
 Then access at <http://localhost:9080/> or <https://localhost:9443/>
 
+There is also a [Liberty InstantOn](https://developer.ibm.com/blogs/liberty-instanton-serverless-for-java-without-compromise/) image at [quay.io/ibm/libertydiag:instanton](https://quay.io/repository/ibm/libertydiag?tab=tags); for example:
+
+```
+podman run --pull=newer --rm --privileged -p 9080:9080 -p 9443:9443 -it quay.io/ibm/libertydiag:instanton
+```
+
 ## Screenshot
 
 ![Screenshot](screenshot.png)
