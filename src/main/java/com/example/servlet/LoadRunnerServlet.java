@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright IBM Corporation 2022.
+ * (c) Copyright IBM Corporation 2022, 2023.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,6 @@ import jakarta.ws.rs.client.ClientBuilder;
  * </pre>
  */
 @WebServlet(LoadRunnerServlet.URL)
-//@ServletSecurity(@HttpConstraint(rolesAllowed = "users"))
 public class LoadRunnerServlet extends HttpServlet {
 
 	public static final String URL = Constants.CONTEXT_SERVLET + "LoadRunner";
@@ -58,9 +57,6 @@ public class LoadRunnerServlet extends HttpServlet {
 	private static final Logger LOG = Logger.getLogger(CLASS);
 
 	private static final long serialVersionUID = 1L;
-
-	// @Resource(lookup = "concurrent/executorService1")
-	// private ManagedExecutorService executorService;
 
 	@Inject
 	@ConfigProperty(name = "MAX_CONCURRENT_THREADS")
@@ -140,6 +136,9 @@ public class LoadRunnerServlet extends HttpServlet {
 					clients.add(ClientBuilder.newClient());
 				}
 
+				if (LOG.isLoggable(Level.FINER))
+					LOG.fine("Requesting thread launcher singleton with max threads = " + maxThreads);
+				
 				ThreadLauncher threadLauncher = VanillaThreadLauncher.getSingleton(maxThreads);
 
 				// Now start the actual threads
