@@ -1,0 +1,8 @@
+# Copy in the WAR file
+COPY --chown=default:root target/libertydiag.war /config/apps
+
+# Maven generates a variables file that will override the defaults
+COPY --chown=default:root target/liberty/wlp/usr/servers/libertydiagServer/configDropins/overrides/liberty-plugin-variable-config.xml /config/configDropins/overrides/
+
+# This script will add the requested server configurations, apply any interim fixes and populate caches to optimize runtime
+RUN configure.sh

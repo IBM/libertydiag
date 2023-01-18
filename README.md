@@ -133,7 +133,7 @@ To develop in Eclipse:
 
 1. On macOS, install `qemu-user-static` for cross-compilation:
    ```
-   podman machine ssh "sudo rpm-ostree install qemu-user-static; sudo systemctl reboot"
+   podman machine ssh "sudo rpm-ostree install qemu-user-static cpp && sudo systemctl reboot"
    ```
 1. Run:
    ```
