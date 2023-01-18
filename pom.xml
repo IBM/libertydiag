@@ -380,6 +380,8 @@
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
                       <arg value="Containerfile.in" />
+                      <arg value="--cpp-flag" />
+                      <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                       <arg line="${image.builder.arguments}" />
@@ -422,6 +424,8 @@
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
                       <arg value="Containerfile.in" />
+                      <arg value="--cpp-flag" />
+                      <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                       <arg line="${image.builder.arguments}" />
@@ -464,6 +468,8 @@
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
                       <arg value="Containerfile.in" />
+                      <arg value="--cpp-flag" />
+                      <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                       <arg line="${image.builder.arguments}" />
@@ -519,6 +525,8 @@
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
                       <arg value="Containerfile.instanton.in" />
+                      <arg value="--cpp-flag" />
+                      <arg value="-fpreprocessed" />
                       <arg value="-t" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.build.instanton.tag}-temp" />
                       <arg line="${image.builder.arguments}" />
