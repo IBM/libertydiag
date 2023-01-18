@@ -68,7 +68,9 @@ RUN chmod a+w /config/configDropins/defaults/keystore.xml
 # Create a /serviceability directory in case the app is installed with the Liberty Operator and there is no claim mount
 # https://www.ibm.com/docs/en/was-liberty/core?topic=operator-storage-serviceability
 # https://www.ibm.com/docs/en/was-liberty/core?topic=resources-webspherelibertydump-custom-resource
-RUN mkdir /serviceability && chown default /serviceability
+USER root
+RUN mkdir /serviceability && chown default:root /serviceability
+USER default
 
 # This script will add the requested XML snippets to enable Liberty features and grow image to be fit-for-purpose using featureUtility. 
 # Only available in 'kernel-slim'. The 'full' tag already includes all features for convenience.

@@ -80,14 +80,14 @@
 
     <image.build.linux.amd64>true</image.build.linux.amd64>
 
-    <!-- The Liberty images aren't built for arm64 at the time of this writing -->
-    <image.build.linux.arm64>false</image.build.linux.arm64>
-
     <!-- TODO: The Liberty build fails for ppc64le on the `RUN features.sh` step at the time of this writing -->
     <image.build.linux.ppc64le>false</image.build.linux.ppc64le>
 
     <!-- TODO: The Liberty build fails for s390x on the `RUN features.sh` step at the time of this writing -->
     <image.build.linux.s390x>false</image.build.linux.s390x>
+
+    <!-- The Liberty images aren't built for arm64 at the time of this writing -->
+    <image.build.linux.arm64>false</image.build.linux.arm64>
 
     <!-- Building the 'instant on' image may not work on all platforms -->
     <image.build.instanton>false</image.build.instanton>
