@@ -65,5 +65,5 @@ RUN chmod a+w /config/configDropins/defaults/keystore.xml
 # https://www.ibm.com/docs/en/was-liberty/core?topic=operator-storage-serviceability
 # https://www.ibm.com/docs/en/was-liberty/core?topic=resources-webspherelibertydump-custom-resource
 USER root
-RUN mkdir /serviceability && chown default:root /serviceability
+RUN mkdir /serviceability && chmod a+rwx /serviceability
 USER default
