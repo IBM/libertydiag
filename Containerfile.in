@@ -7,7 +7,7 @@ FROM icr.io/appcafe/open-liberty:kernel-slim-java8-ibmjava-ubi
 
 #include "Containerfile.shared1"
 
-# Add some more advanced features
+# Add some more advanced features that InstantOn can't handle yet
 COPY --chown=default:root src/main/liberty/config/configDropins/defaults/advanced.xml /config/configDropins/defaults/advanced.xml
 
 # This script will grow the image to be fit-for-purpose using featureUtility based on the configured features.
