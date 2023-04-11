@@ -1,0 +1,20 @@
+apiVersion: liberty.websphere.ibm.com/v1
+kind: WebSphereLibertyApplication
+metadata:
+  name: libertydiag
+  annotations:
+    openliberty.io/day2operations: WebSphereLibertyTrace,WebSphereLibertyDump
+spec:
+  license:
+    accept: true
+    edition: IBM WebSphere Application Server
+    metric: Virtual Processor Core (VPC)
+    productEntitlementSource: Standalone
+  applicationImage: quay.io/ibm/libertydiag
+  probes:
+    readiness:
+      initialDelaySeconds: 1
+      failureThreshold: 1
+  manageTLS: true
+  expose: true
+  pullPolicy: Always

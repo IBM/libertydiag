@@ -37,7 +37,16 @@ podman run --pull=newer --rm --privileged -p 9080:9080 -p 9443:9443 -it quay.io/
 
 ## Development
 
-1. Java >= 8 is required on your `PATH`; for example, [Semeru Java 8](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/?version=8)
+1. Pre-requisities:
+    1. Java >= 8 is required on your `PATH`; for example, [Semeru Java 8](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/?version=8)
+    1. macOS:
+       ```
+       brew install gcc
+       ```
+    1. Using podman on macOS:
+       ```
+       podman machine ssh "sudo rpm-ostree install qemu-user-static cpp && sudo systemctl reboot"
+       ```
 1. Build and run with [`mvnw liberty:dev`](https://openliberty.io/docs/latest/development-mode.html):
     * macOS and Linux:
       ```
@@ -98,9 +107,6 @@ To develop in Eclipse:
    ```
    ./mvnw -Dimage.builder.arguments="--build-arg WLP_LOGGING_CONSOLE_FORMAT='SIMPLE' --build-arg WLP_LOGGING_CONSOLE_LOGLEVEL='INFO' --build-arg WLP_LOGGING_CONSOLE_SOURCE='message'" deploy
    ```
-1. Build container and push the manifest to [quay.io/ibm/libertydiag](https://quay.io/repository/ibm/libertydiag?tab=tags):
-    1. `podman login quay.io`
-    1. `mvnw -Dimage.build.instanton=true -Dimage.manifest.repository.push=true clean deploy`
 
 ### Build Issues
 

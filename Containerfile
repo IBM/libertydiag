@@ -1,3 +1,6 @@
+# We use IBM Java 8 so that we can use the Health Center sampling profiler
+FROM icr.io/appcafe/websphere-liberty:full-java8-ibmjava-ubi
+
 # These defaults are overridden by `--build-arg` arguments in pom.xml
 ARG NAME=placeholder
 ARG VERSION=0.0.0
@@ -55,9 +58,6 @@ COPY --chown=default:root src/main/liberty/config/server.env /config/server.env
 # in overrides/keystore.xml to avoid the CWWKG0102I message
 COPY --chown=default:root src/main/liberty/config/configDropins/defaults/keystore.xml /config/configDropins/defaults/keystore.xml
 
-# Remove redundant config
-RUN rm /config/configDropins/defaults/open-default-port.xml
-
 # Required for Liberty Operator with manageTLS: true
 RUN chmod a+w /config/configDropins/defaults/keystore.xml
 
@@ -66,4 +66,26 @@ RUN chmod a+w /config/configDropins/defaults/keystore.xml
 # https://www.ibm.com/docs/en/was-liberty/core?topic=resources-webspherelibertydump-custom-resource
 USER root
 RUN mkdir /serviceability && chmod a+rwx /serviceability
-USER default
+
+# USER default
+#
+# Some versions of Kubernetes do not like using a non-numeric user ID, even
+# thought the 'default' user is mapped to user ID 1001. This can cause errors such as:
+# 
+# container has runAsNonRoot and image has non-numeric user (default), cannot verify user is non-root
+# 
+# Therefore we use an explicit ID
+# 
+USER 1001
+
+# Add some more advanced features that InstantOn can't handle yet
+COPY --chown=default:root src/main/liberty/config/configDropins/defaults/advanced.xml /config/configDropins/defaults/advanced.xml
+
+# Copy in the WAR file
+COPY --chown=default:root target/libertydiag.war /config/apps
+
+# Maven generates a variables file that will override the defaults
+COPY --chown=default:root target/liberty/wlp/usr/servers/libertydiagServer/configDropins/overrides/liberty-plugin-variable-config.xml /config/configDropins/overrides/
+
+# This script will add the requested XML snippets, grow image to be fit-for-purpose and apply interim fixes
+RUN configure.sh

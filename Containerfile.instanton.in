@@ -1,8 +1,0 @@
-FROM icr.io/appcafe/open-liberty:beta-instanton
-
-# podman supports *.in Containerfiles which can #include snippets from other files
-# which we use to share Containerfile snippets between the vanilla and InstantOn Containerfiles
-# https://docs.podman.io/en/latest/markdown/podman-build.1.html
-
-#include "Containerfile.shared1"
-#include "Containerfile.shared2"

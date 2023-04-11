@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
   <artifactId>libertydiag</artifactId>
-  <version>0.1.20230117</version>
+  <version>0.1.20230411</version>
   <packaging>war</packaging>
 
   <!-- Override these with mvn -D${PROPERTY}=${VALUE} -->
@@ -32,8 +32,17 @@
     -->
     <liberty.packaging.type>minify,runnable</liberty.packaging.type>
 
-    <!-- OpenLiberty (ol) or WebSphere Liberty (wlp): https://github.com/OpenLiberty/ci.maven#build -->
-    <runtime>ol</runtime>
+    <!--
+      Specifying WebSphere Liberty or OpenLiberty:
+      https://github.com/OpenLiberty/ci.maven/blob/main/docs/installation-configuration.md
+    -->
+    <liberty.runtime.groupId>com.ibm.websphere.appserver.runtime</liberty.runtime.groupId>
+    <liberty.runtime.artifactId>wlp-kernel</liberty.runtime.artifactId>
+    <!--
+      The default version is the latest but may be explicitly specified if needed:
+      https://central.sonatype.com/artifact/com.ibm.websphere.appserver.runtime/wlp-kernel/
+    -->
+    <!--<liberty.runtime.version>23.0.0.3</liberty.runtime.version>-->
 
     <!--
       These values get generated into liberty-plugin-variable-config.xml which is then
@@ -65,10 +74,8 @@
 
     <!-- image.user is either blank or must be lower case and end with a / -->
     <image.user></image.user>
-
     <!-- image.repository is either blank or otherwise must end with a / -->
     <image.repository>localhost/</image.repository>
-
     <image.tag>latest</image.tag>
 
     <!--
@@ -77,16 +84,12 @@
       only wanting to test InstantOn builds
     -->
     <image.build>true</image.build>
-
     <image.build.linux.amd64>true</image.build.linux.amd64>
-
-    <!-- TODO: The Liberty build fails for ppc64le on the `RUN features.sh` step at the time of this writing -->
+    <!-- TODO: build crashes at the time of this writing -->
     <image.build.linux.ppc64le>false</image.build.linux.ppc64le>
-
-    <!-- TODO: The Liberty build fails for s390x on the `RUN features.sh` step at the time of this writing -->
+    <!-- TODO: build crashes at the time of this writing -->
     <image.build.linux.s390x>false</image.build.linux.s390x>
-
-    <!-- The Liberty images aren't built for arm64 at the time of this writing -->
+    <!-- The IBM Java images aren't built for arm64 at the time of this writing -->
     <image.build.linux.arm64>false</image.build.linux.arm64>
 
     <!-- Building the 'instant on' image may not work on all platforms -->
@@ -94,13 +97,9 @@
     <image.build.instanton.tag>instanton</image.build.instanton.tag>
 
     <image.manifest.repository.push>false</image.manifest.repository.push>
-
     <image.manifest.repository>quay.io</image.manifest.repository>
-
     <image.manifest.user>ibm</image.manifest.user>
-
     <image.manifest.name>${image.name}</image.manifest.name>
-
     <image.manifest.tag>${image.tag}</image.manifest.tag>
 
     <!-- Any other arguments to pass to the image builder -->
@@ -265,7 +264,7 @@
                     <equals arg1="${rc}" arg2="125" />
                   </condition>
                   <sequential if:true="${conditionResult}">
-                    <echo level="info" message="Code 125 means the manifest already exists. Clearing it..." />
+                    <echo level="info" message="Previous 'ERROR' expected. Code 125 means the manifest already exists. Clearing it..." />
                     <exec osfamily="unix" dir="${project.basedir}" executable="./cleanmanifest.sh" failonerror="true">
                       <arg value="${image.builder}" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
@@ -287,11 +286,11 @@
                     <arg value="${image.repository}${image.user}${image.name}:${image.build.instanton.tag}" />
                   </exec>
 
-                  <condition property="conditionResult">
+                  <condition property="conditionResult2">
                     <equals arg1="${rc}" arg2="125" />
                   </condition>
-                  <sequential if:true="${conditionResult}">
-                    <echo level="info" message="Code 125 means the manifest already exists. Clearing it..." />
+                  <sequential if:true="${conditionResult2}">
+                    <echo level="info" message="Previous 'ERROR' expected. Code 125 means the manifest already exists. Clearing it..." />
                     <exec osfamily="unix" dir="${project.basedir}" executable="./cleanmanifest.sh" failonerror="true">
                       <arg value="${image.builder}" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.build.instanton.tag}" />
@@ -335,7 +334,7 @@
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
-                      <arg value="Containerfile.in" />
+                      <arg value="Containerfile" />
                       <arg value="--cpp-flag" />
                       <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
@@ -379,7 +378,7 @@
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
-                      <arg value="Containerfile.in" />
+                      <arg value="Containerfile" />
                       <arg value="--cpp-flag" />
                       <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
@@ -423,7 +422,7 @@
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
-                      <arg value="Containerfile.in" />
+                      <arg value="Containerfile" />
                       <arg value="--cpp-flag" />
                       <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
@@ -467,7 +466,7 @@
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
-                      <arg value="Containerfile.in" />
+                      <arg value="Containerfile" />
                       <arg value="--cpp-flag" />
                       <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
@@ -524,7 +523,7 @@
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
                       <arg value="--file" />
-                      <arg value="Containerfile.instanton.in" />
+                      <arg value="Containerfile.instanton" />
                       <arg value="--cpp-flag" />
                       <arg value="-fpreprocessed" />
                       <arg value="-t" />
