@@ -39,10 +39,6 @@ podman run --pull=newer --rm --privileged -p 9080:9080 -p 9443:9443 -it quay.io/
 
 1. Pre-requisities:
     1. Java >= 8 is required on your `PATH`; for example, [Semeru Java 8](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/?version=8)
-    1. macOS:
-       ```
-       brew install gcc
-       ```
     1. Using podman on macOS:
        ```
        podman machine ssh "sudo rpm-ostree install qemu-user-static cpp && sudo systemctl reboot"

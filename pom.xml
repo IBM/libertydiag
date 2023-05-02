@@ -84,12 +84,13 @@
       only wanting to test InstantOn builds
     -->
     <image.build>true</image.build>
+    <image.build.verbose>false</image.build.verbose>
     <image.build.linux.amd64>true</image.build.linux.amd64>
     <!-- TODO: build crashes at the time of this writing -->
-    <image.build.linux.ppc64le>false</image.build.linux.ppc64le>
+    <image.build.linux.ppc64le>true</image.build.linux.ppc64le>
     <!-- TODO: build crashes at the time of this writing -->
-    <image.build.linux.s390x>false</image.build.linux.s390x>
-    <!-- The IBM Java images aren't built for arm64 at the time of this writing -->
+    <image.build.linux.s390x>true</image.build.linux.s390x>
+    <!-- No Liberty images for ARM as of this writing -->
     <image.build.linux.arm64>false</image.build.linux.arm64>
 
     <!-- Building the 'instant on' image may not work on all platforms -->
@@ -333,10 +334,10 @@
                       <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                      <arg value="--build-arg" />>
+                      <arg value="VERBOSE=${image.build.verbose}" />
                       <arg value="--file" />
                       <arg value="Containerfile" />
-                      <arg value="--cpp-flag" />
-                      <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                       <arg line="${image.builder.arguments}" />
@@ -377,10 +378,10 @@
                       <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                      <arg value="--build-arg" />>
+                      <arg value="VERBOSE=${image.build.verbose}" />
                       <arg value="--file" />
                       <arg value="Containerfile" />
-                      <arg value="--cpp-flag" />
-                      <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                       <arg line="${image.builder.arguments}" />
@@ -421,10 +422,13 @@
                       <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                      <arg value="--build-arg" />>
+                      <arg value="VERBOSE=${image.build.verbose}" />
+                      <arg value="--build-arg" />>
+                      <!-- Crashes when cross-compiling with SCC as of this writing -->
+                      <arg value="OPENJ9_JAVA_OPTIONS=-Xshareclasses:none" />
                       <arg value="--file" />
                       <arg value="Containerfile" />
-                      <arg value="--cpp-flag" />
-                      <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                       <arg line="${image.builder.arguments}" />
@@ -465,10 +469,13 @@
                       <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                      <arg value="--build-arg" />>
+                      <arg value="VERBOSE=${image.build.verbose}" />
+                      <arg value="--build-arg" />>
+                      <!-- Crashes when cross-compiling with SCC as of this writing -->
+                      <arg value="OPENJ9_SCC=-Xshareclasses:none" />
                       <arg value="--file" />
                       <arg value="Containerfile" />
-                      <arg value="--cpp-flag" />
-                      <arg value="-fpreprocessed" />
                       <arg value="--manifest" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.tag}" />
                       <arg line="${image.builder.arguments}" />
@@ -522,10 +529,10 @@
                       <arg value="HTTP_PORT=${liberty.var.HTTP_PORT}" />
                       <arg value="--build-arg" />
                       <arg value="HTTPS_PORT=${liberty.var.HTTPS_PORT}" />
+                      <arg value="--build-arg" />>
+                      <arg value="VERBOSE=${image.build.verbose}" />
                       <arg value="--file" />
                       <arg value="Containerfile.instanton" />
-                      <arg value="--cpp-flag" />
-                      <arg value="-fpreprocessed" />
                       <arg value="-t" />
                       <arg value="${image.repository}${image.user}${image.name}:${image.build.instanton.tag}-temp" />
                       <arg line="${image.builder.arguments}" />
