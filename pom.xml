@@ -87,9 +87,9 @@
     <image.build.verbose>false</image.build.verbose>
     <image.build.linux.amd64>true</image.build.linux.amd64>
     <!-- TODO: build crashes at the time of this writing -->
-    <image.build.linux.ppc64le>true</image.build.linux.ppc64le>
+    <image.build.linux.ppc64le>false</image.build.linux.ppc64le>
     <!-- TODO: build crashes at the time of this writing -->
-    <image.build.linux.s390x>true</image.build.linux.s390x>
+    <image.build.linux.s390x>false</image.build.linux.s390x>
     <!-- No Liberty images for ARM as of this writing -->
     <image.build.linux.arm64>false</image.build.linux.arm64>
 

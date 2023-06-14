@@ -6,7 +6,7 @@ Running this application in production should be done with care because it may b
 
 ## Download or Run
 
-Download `libertydiag.war` from the latest release at <https://github.com/IBM/libertydiag/releases/latest>
+Download `libertydiag.war` from <https://github.com/IBM/libertydiag/releases/latest>
 
 This application [requires](https://www.ibm.com/docs/en/was-liberty/base?topic=management-liberty-features) Liberty >= 22.0.0.1 and at least the following features to be installed:
 
@@ -38,12 +38,12 @@ podman run --pull=newer --rm --privileged -p 9080:9080 -p 9443:9443 -it quay.io/
 ## Development
 
 1. Pre-requisities:
-    1. Java >= 8 is required on your `PATH`; for example, [Semeru Java 8](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/?version=8)
+    1. Java >= 8 is required on your `PATH`; for example, [IBM Semeru Runtimes](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/)
     1. Using podman on macOS:
        ```
        podman machine ssh "sudo rpm-ostree install qemu-user-static cpp && sudo systemctl reboot"
        ```
-1. Build and run with [`mvnw liberty:dev`](https://openliberty.io/docs/latest/development-mode.html):
+1. Build and run:
     * macOS and Linux:
       ```
       ./mvnw clean liberty:dev
