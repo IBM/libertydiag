@@ -56,13 +56,6 @@ COPY --chown=default:root src/main/liberty/config/jvm.options /config/jvm.option
 COPY --chown=default:root src/main/liberty/config/bootstrap.properties /config/bootstrap.properties
 COPY --chown=default:root src/main/liberty/config/server.env /config/server.env
 
-# /config/configDropins/defaults/keystore.xml is overwritten directly instead of being put
-# in overrides/keystore.xml to avoid the CWWKG0102I message
-COPY --chown=default:root src/main/liberty/config/configDropins/defaults/keystore.xml /config/configDropins/defaults/keystore.xml
-
-# Required for Liberty Operator with manageTLS: true
-RUN chmod a+w /config/configDropins/defaults/keystore.xml
-
 # Create a /serviceability directory in case the app is installed with the Liberty Operator and there is no claim mount
 # https://www.ibm.com/docs/en/was-liberty/core?topic=operator-storage-serviceability
 # https://www.ibm.com/docs/en/was-liberty/core?topic=resources-webspherelibertydump-custom-resource
