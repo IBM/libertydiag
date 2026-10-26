@@ -66,7 +66,12 @@ public class Sleep extends BaseServlet {
 				}
 				duration = (int) Math.round((random.nextGaussian() * stddev) + mean);
 				if (duration < 0) {
-					duration = (int)mean;
+					duration = (int) Math.round(mean);
+					if (duration > Integer.MIN_VALUE && duration < Integer.MAX_VALUE) {
+						// Good value
+					} else {
+						throw new RuntimeException("Value out of bounds");
+					}
 				}
 			}
 		}
